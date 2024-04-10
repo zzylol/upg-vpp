@@ -79,8 +79,15 @@ if(HS_FOUND)
     upf_proxy.h
     upf_app_db.h
     upf_ipfilter.h
+    upf_app_dpo.h
+    upf_app_db.h
     flowtable.h
     flowtable_tcp.h
+    upf_ipfix.h
+    upf_ipfix_templates.h
+    upf_gtpu_error.def
+    version.h
+    llist.h
 
     LINK_LIBRARIES
     ${HS_LIBRARIES}
