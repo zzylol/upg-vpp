@@ -58,7 +58,7 @@ format_flags (u8 * s, va_list * args)
   s = format (s, "[");
   for (int i = 0; i < 64 && atoms[i] != NULL; i++)
     {
-      if (!ISSET_BIT (flags, i))
+      if (!UPF_ISSET_BIT (flags, i))
 	continue;
 
       if (!first)
@@ -3931,9 +3931,9 @@ decode_vlan_tag (u8 * data, u16 length, void *p)
   if (length < 3)
     return PFCP_CAUSE_INVALID_LENGTH;
 
-  v->mask = clib_host_to_net_u16 (((data[0] & BIT (0)) ? VLAN_MASK_PCP : 0) |
-				  ((data[0] & BIT (1)) ? VLAN_MASK_DEI : 0) |
-				  ((data[0] & BIT (2)) ? VLAN_MASK_VID : 0));
+  v->mask = clib_host_to_net_u16 (((data[0] & UPF_BIT (0)) ? VLAN_MASK_PCP : 0) |
+				  ((data[0] & UPF_BIT (1)) ? VLAN_MASK_DEI : 0) |
+				  ((data[0] & UPF_BIT (2)) ? VLAN_MASK_VID : 0));
   v->tci = clib_host_to_net_u16 (((data[1] & 0x07) << 5) |
 				 ((data[1] & 0x08) << 1) |
 				 ((data[1] & 0xf0) << 4) | data[2]);
@@ -3951,9 +3951,9 @@ encode_vlan_tag (void *p, u8 ** vec)
   u16 mask = clib_net_to_host_u16 (v->mask);
   u16 tci = clib_net_to_host_u16 (v->tci);
 
-  put_u8 (*vec, (((mask & VLAN_MASK_PCP) ? BIT (0) : 0) |
-		 ((mask & VLAN_MASK_DEI) ? BIT (1) : 0) |
-		 ((mask & VLAN_MASK_VID) ? BIT (2) : 0)));
+  put_u8 (*vec, (((mask & VLAN_MASK_PCP) ? UPF_BIT (0) : 0) |
+		 ((mask & VLAN_MASK_DEI) ? UPF_BIT (1) : 0) |
+		 ((mask & VLAN_MASK_VID) ? UPF_BIT (2) : 0)));
   put_u16 (*vec, (((tci & VLAN_MASK_PCP) >> 5) |
 		  ((tci & VLAN_MASK_DEI) >> 1) |
 		  ((tci & 0x0f00) << 4) | (tci & 0x00ff)));
@@ -6404,8 +6404,8 @@ static struct pfcp_ie_def tgpp_specs[] =
       .name = "Create PDR",
       .length = sizeof(pfcp_create_pdr_t),
       .mandatory = (BIT(CREATE_PDR_PDR_ID) |
-		    BIT(CREATE_PDR_PRECEDENCE) |
-		    BIT(CREATE_PDR_PDI)),
+		    UPF_BIT(CREATE_PDR_PRECEDENCE) |
+		    UPF_BIT(CREATE_PDR_PDI)),
       .size = ARRAY_LEN(pfcp_create_pdr_group),
       .group = pfcp_create_pdr_group,
     },
@@ -6413,7 +6413,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "PDI",
       .length = sizeof(pfcp_pdi_t),
-      .mandatory = BIT(PDI_SOURCE_INTERFACE),
+      .mandatory = UPF_BIT(PDI_SOURCE_INTERFACE),
       .size = ARRAY_LEN(pfcp_pdi_group),
       .group = pfcp_pdi_group,
     },
@@ -6422,7 +6422,7 @@ static struct pfcp_ie_def tgpp_specs[] =
       .name = "Create FAR",
       .length = sizeof(pfcp_create_far_t),
       .mandatory = (BIT(CREATE_FAR_FAR_ID) |
-		    BIT(CREATE_FAR_APPLY_ACTION)),
+		    UPF_BIT(CREATE_FAR_APPLY_ACTION)),
       .size = ARRAY_LEN(pfcp_create_far_group),
       .group = pfcp_create_far_group,
     },
@@ -6430,7 +6430,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Forwarding Parameters",
       .length = sizeof(pfcp_forwarding_parameters_t),
-      .mandatory = BIT(FORWARDING_PARAMETERS_DESTINATION_INTERFACE),
+      .mandatory = UPF_BIT(FORWARDING_PARAMETERS_DESTINATION_INTERFACE),
       .size = ARRAY_LEN(pfcp_forwarding_parameters_group),
       .group = pfcp_forwarding_parameters_group,
     },
@@ -6438,7 +6438,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Duplicating Parameters",
       .length = sizeof(pfcp_duplicating_parameters_t),
-      .mandatory = BIT(DUPLICATING_PARAMETERS_DESTINATION_INTERFACE),
+      .mandatory = UPF_BIT(DUPLICATING_PARAMETERS_DESTINATION_INTERFACE),
       .size = ARRAY_LEN(pfcp_duplicating_parameters_group),
       .group = pfcp_duplicating_parameters_group,
     },
@@ -6447,8 +6447,8 @@ static struct pfcp_ie_def tgpp_specs[] =
       .name = "Create URR",
       .length = sizeof(pfcp_create_urr_t),
       .mandatory = (BIT(CREATE_URR_URR_ID) |
-		    BIT(CREATE_URR_MEASUREMENT_METHOD) |
-		    BIT(CREATE_URR_REPORTING_TRIGGERS)),
+		    UPF_BIT(CREATE_URR_MEASUREMENT_METHOD) |
+		    UPF_BIT(CREATE_URR_REPORTING_TRIGGERS)),
       .size = ARRAY_LEN(pfcp_create_urr_group),
       .group = pfcp_create_urr_group,
     },
@@ -6457,7 +6457,7 @@ static struct pfcp_ie_def tgpp_specs[] =
       .name = "Create QER",
       .length = sizeof(pfcp_create_qer_t),
       .mandatory = (BIT(CREATE_QER_QER_ID) |
-		    BIT(CREATE_QER_GATE_STATUS)),
+		    UPF_BIT(CREATE_QER_GATE_STATUS)),
       .size = ARRAY_LEN(pfcp_create_qer_group),
       .group = pfcp_create_qer_group,
     },
@@ -6465,7 +6465,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Created PDR",
       .length = sizeof(pfcp_created_pdr_t),
-      .mandatory = BIT(CREATED_PDR_PDR_ID),
+      .mandatory = UPF_BIT(CREATED_PDR_PDR_ID),
       .size = ARRAY_LEN(pfcp_created_pdr_group),
       .group = pfcp_created_pdr_group,
     },
@@ -6473,7 +6473,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Update PDR",
       .length = sizeof(pfcp_update_pdr_t),
-      .mandatory = BIT(UPDATE_PDR_PDR_ID),
+      .mandatory = UPF_BIT(UPDATE_PDR_PDR_ID),
       .size = ARRAY_LEN(pfcp_update_pdr_group),
       .group = pfcp_update_pdr_group,
     },
@@ -6481,7 +6481,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Update FAR",
       .length = sizeof(pfcp_update_far_t),
-      .mandatory = BIT(UPDATE_FAR_FAR_ID),
+      .mandatory = UPF_BIT(UPDATE_FAR_FAR_ID),
       .size = ARRAY_LEN(pfcp_update_far_group),
       .group = pfcp_update_far_group,
     },
@@ -6496,7 +6496,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Update BAR Response",
       .length = sizeof(pfcp_update_bar_response_t),
-      .mandatory = BIT(UPDATE_BAR_RESPONSE_BAR_ID),
+      .mandatory = UPF_BIT(UPDATE_BAR_RESPONSE_BAR_ID),
       .size = ARRAY_LEN(pfcp_update_bar_response_group),
       .group = pfcp_update_bar_response_group,
     },
@@ -6504,7 +6504,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Update URR",
       .length = sizeof(pfcp_update_urr_t),
-      .mandatory = BIT(UPDATE_URR_URR_ID),
+      .mandatory = UPF_BIT(UPDATE_URR_URR_ID),
       .size = ARRAY_LEN(pfcp_update_urr_group),
       .group = pfcp_update_urr_group,
     },
@@ -6512,7 +6512,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Update QER",
       .length = sizeof(pfcp_update_qer_t),
-      .mandatory = BIT(UPDATE_QER_QER_ID),
+      .mandatory = UPF_BIT(UPDATE_QER_QER_ID),
       .size = ARRAY_LEN(pfcp_update_qer_group),
       .group = pfcp_update_qer_group,
     },
@@ -6520,7 +6520,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Remove PDR",
       .length = sizeof(pfcp_remove_pdr_t),
-      .mandatory = BIT(REMOVE_PDR_PDR_ID),
+      .mandatory = UPF_BIT(REMOVE_PDR_PDR_ID),
       .size = ARRAY_LEN(pfcp_remove_pdr_group),
       .group = pfcp_remove_pdr_group,
     },
@@ -6528,7 +6528,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Remove FAR",
       .length = sizeof(pfcp_remove_far_t),
-      .mandatory = BIT(REMOVE_FAR_FAR_ID),
+      .mandatory = UPF_BIT(REMOVE_FAR_FAR_ID),
       .size = ARRAY_LEN(pfcp_remove_far_group),
       .group = pfcp_remove_far_group,
     },
@@ -6536,7 +6536,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Remove URR",
       .length = sizeof(pfcp_remove_urr_t),
-      .mandatory = BIT(REMOVE_URR_URR_ID),
+      .mandatory = UPF_BIT(REMOVE_URR_URR_ID),
       .size = ARRAY_LEN(pfcp_remove_urr_group),
       .group = pfcp_remove_urr_group,
     },
@@ -6544,7 +6544,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Remove QER",
       .length = sizeof(pfcp_remove_qer_t),
-      .mandatory = BIT(REMOVE_QER_QER_ID),
+      .mandatory = UPF_BIT(REMOVE_QER_QER_ID),
       .size = ARRAY_LEN(pfcp_remove_qer_group),
       .group = pfcp_remove_qer_group,
     },
@@ -6594,7 +6594,7 @@ static struct pfcp_ie_def tgpp_specs[] =
       .name = "Load Control Information",
       .length = sizeof(pfcp_load_control_information_t),
       .mandatory = (BIT(LOAD_CONTROL_INFORMATION_SEQUENCE_NUMBER) |
-		    BIT(LOAD_CONTROL_INFORMATION_METRIC)),
+		    UPF_BIT(LOAD_CONTROL_INFORMATION_METRIC)),
       .size = ARRAY_LEN(pfcp_load_control_information_group),
       .group = pfcp_load_control_information_group,
     },
@@ -6605,8 +6605,8 @@ static struct pfcp_ie_def tgpp_specs[] =
       .name = "Overload Control Information",
       .length = sizeof(pfcp_overload_control_information_t),
       .mandatory = (BIT(OVERLOAD_CONTROL_INFORMATION_SEQUENCE_NUMBER) |
-		    BIT(OVERLOAD_CONTROL_INFORMATION_METRIC) |
-		    BIT(OVERLOAD_CONTROL_INFORMATION_TIMER)),
+		    UPF_BIT(OVERLOAD_CONTROL_INFORMATION_METRIC) |
+		    UPF_BIT(OVERLOAD_CONTROL_INFORMATION_TIMER)),
       .size = ARRAY_LEN(pfcp_overload_control_information_group),
       .group = pfcp_overload_control_information_group,
     },
@@ -6617,7 +6617,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Application ID PFDs",
       .length = sizeof(pfcp_application_id_pfds_t),
-      .mandatory = BIT(APPLICATION_ID_PFDS_APPLICATION_ID),
+      .mandatory = UPF_BIT(APPLICATION_ID_PFDS_APPLICATION_ID),
       .size = ARRAY_LEN(pfcp_application_id_pfds_group),
       .group = pfcp_application_id_pfds_group,
     },
@@ -6625,7 +6625,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "PFD",
       .length = sizeof(pfcp_pfd_t),
-      .mandatory = BIT(PFD_PFD_CONTENTS),
+      .mandatory = UPF_BIT(PFD_PFD_CONTENTS),
       .size = ARRAY_LEN(pfcp_pfd_group),
       .group = pfcp_pfd_group,
     },
@@ -6641,7 +6641,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Application Detection Information",
       .length = sizeof(pfcp_application_detection_information_t),
-      .mandatory = BIT(APPLICATION_DETECTION_INFORMATION_APPLICATION_ID),
+      .mandatory = UPF_BIT(APPLICATION_DETECTION_INFORMATION_APPLICATION_ID),
       .size = ARRAY_LEN(pfcp_application_detection_information_group),
       .group = pfcp_application_detection_information_group,
     },
@@ -6658,7 +6658,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Query URR",
       .length = sizeof(pfcp_query_urr_t),
-      .mandatory = BIT(QUERY_URR_URR_ID),
+      .mandatory = UPF_BIT(QUERY_URR_URR_ID),
       .size = ARRAY_LEN(pfcp_query_urr_group),
       .group = pfcp_query_urr_group,
     },
@@ -6667,8 +6667,8 @@ static struct pfcp_ie_def tgpp_specs[] =
       .name = "Usage Report SMR",
       .length = sizeof(pfcp_usage_report_t),
       .mandatory = (BIT(USAGE_REPORT_URR_ID) |
-		    BIT(USAGE_REPORT_UR_SEQN) |
-		    BIT(USAGE_REPORT_USAGE_REPORT_TRIGGER)),
+		    UPF_BIT(USAGE_REPORT_UR_SEQN) |
+		    UPF_BIT(USAGE_REPORT_USAGE_REPORT_TRIGGER)),
       .size = ARRAY_LEN(pfcp_usage_report_smr_group),
       .group = pfcp_usage_report_smr_group,
     },
@@ -6677,8 +6677,8 @@ static struct pfcp_ie_def tgpp_specs[] =
       .name = "Usage Report SDR",
       .length = sizeof(pfcp_usage_report_t),
       .mandatory = (BIT(USAGE_REPORT_URR_ID) |
-		    BIT(USAGE_REPORT_UR_SEQN) |
-		    BIT(USAGE_REPORT_USAGE_REPORT_TRIGGER)),
+		    UPF_BIT(USAGE_REPORT_UR_SEQN) |
+		    UPF_BIT(USAGE_REPORT_USAGE_REPORT_TRIGGER)),
       .size = ARRAY_LEN(pfcp_usage_report_sdr_group),
       .group = pfcp_usage_report_sdr_group,
     },
@@ -6687,8 +6687,8 @@ static struct pfcp_ie_def tgpp_specs[] =
       .name = "Usage Report SRR",
       .length = sizeof(pfcp_usage_report_t),
       .mandatory = (BIT(USAGE_REPORT_URR_ID) |
-		    BIT(USAGE_REPORT_UR_SEQN) |
-		    BIT(USAGE_REPORT_USAGE_REPORT_TRIGGER)),
+		    UPF_BIT(USAGE_REPORT_UR_SEQN) |
+		    UPF_BIT(USAGE_REPORT_USAGE_REPORT_TRIGGER)),
       .size = ARRAY_LEN(pfcp_usage_report_srr_group),
       .group = pfcp_usage_report_srr_group,
     },
@@ -6698,7 +6698,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Downlink Data Report",
       .length = sizeof(pfcp_downlink_data_report_t),
-      .mandatory = BIT(DOWNLINK_DATA_REPORT_PDR_ID),
+      .mandatory = UPF_BIT(DOWNLINK_DATA_REPORT_PDR_ID),
       .size = ARRAY_LEN(pfcp_downlink_data_report_group),
       .group = pfcp_downlink_data_report_group,
     },
@@ -6707,7 +6707,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Create BAR",
       .length = sizeof(pfcp_create_bar_t),
-      .mandatory = BIT(CREATE_BAR_BAR_ID),
+      .mandatory = UPF_BIT(CREATE_BAR_BAR_ID),
       .size = ARRAY_LEN(pfcp_create_bar_group),
       .group = pfcp_create_bar_group,
     },
@@ -6715,7 +6715,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Update BAR Request",
       .length = sizeof(pfcp_update_bar_request_t),
-      .mandatory = BIT(UPDATE_BAR_REQUEST_BAR_ID),
+      .mandatory = UPF_BIT(UPDATE_BAR_REQUEST_BAR_ID),
       .size = ARRAY_LEN(pfcp_update_bar_request_group),
       .group = pfcp_update_bar_request_group,
     },
@@ -6723,7 +6723,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Remove BAR",
       .length = sizeof(pfcp_remove_bar_t),
-      .mandatory = BIT(REMOVE_BAR_BAR_ID),
+      .mandatory = UPF_BIT(REMOVE_BAR_BAR_ID),
       .size = ARRAY_LEN(pfcp_remove_bar_group),
       .group = pfcp_remove_bar_group,
     },
@@ -6743,7 +6743,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Error Indication Report",
       .length = sizeof(pfcp_error_indication_report_t),
-      .mandatory = BIT(ERROR_INDICATION_REPORT_F_TEID),
+      .mandatory = UPF_BIT(ERROR_INDICATION_REPORT_F_TEID),
       .size = ARRAY_LEN(pfcp_error_indication_report_group),
       .group = pfcp_error_indication_report_group,
     },
@@ -6754,7 +6754,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "User Plane Path Failure Report",
       .length = sizeof(pfcp_user_plane_path_failure_report_t),
-      .mandatory = BIT(USER_PLANE_PATH_FAILURE_REPORT_REMOTE_GTP_U_PEER),
+      .mandatory = UPF_BIT(USER_PLANE_PATH_FAILURE_REPORT_REMOTE_GTP_U_PEER),
       .size = ARRAY_LEN(pfcp_user_plane_path_failure_report_group),
       .group = pfcp_user_plane_path_failure_report_group,
     },
@@ -6790,7 +6790,7 @@ static struct pfcp_ie_def tgpp_specs[] =
       .name = "Aggregated URRs",
       .length = sizeof(pfcp_aggregated_urrs_t),
       .mandatory = (BIT(AGGREGATED_URRS_AGGREGATED_URR_ID) |
-		    BIT(AGGREGATED_URRS_MULTIPLIER)),
+		    UPF_BIT(AGGREGATED_URRS_MULTIPLIER)),
       .size = ARRAY_LEN(pfcp_aggregated_urrs_group),
       .group = pfcp_aggregated_urrs_group,
     },
@@ -6808,7 +6808,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Create Traffic Endpoint",
       .length = sizeof(pfcp_create_traffic_endpoint_t),
-      .mandatory = BIT(CREATE_TRAFFIC_ENDPOINT_TRAFFIC_ENDPOINT_ID),
+      .mandatory = UPF_BIT(CREATE_TRAFFIC_ENDPOINT_TRAFFIC_ENDPOINT_ID),
       .size = ARRAY_LEN(pfcp_create_traffic_endpoint_group),
       .group = pfcp_create_traffic_endpoint_group,
     },
@@ -6816,7 +6816,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Created Traffic Endpoint",
       .length = sizeof(pfcp_created_traffic_endpoint_t),
-      .mandatory = BIT(CREATED_TRAFFIC_ENDPOINT_TRAFFIC_ENDPOINT_ID),
+      .mandatory = UPF_BIT(CREATED_TRAFFIC_ENDPOINT_TRAFFIC_ENDPOINT_ID),
       .size = ARRAY_LEN(pfcp_created_traffic_endpoint_group),
       .group = pfcp_created_traffic_endpoint_group,
     },
@@ -6824,7 +6824,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Update Traffic Endpoint",
       .length = sizeof(pfcp_update_traffic_endpoint_t),
-      .mandatory = BIT(UPDATE_TRAFFIC_ENDPOINT_TRAFFIC_ENDPOINT_ID),
+      .mandatory = UPF_BIT(UPDATE_TRAFFIC_ENDPOINT_TRAFFIC_ENDPOINT_ID),
       .size = ARRAY_LEN(pfcp_update_traffic_endpoint_group),
       .group = pfcp_update_traffic_endpoint_group,
     },
@@ -6832,7 +6832,7 @@ static struct pfcp_ie_def tgpp_specs[] =
     {
       .name = "Remove Traffic Endpoint",
       .length = sizeof(pfcp_remove_traffic_endpoint_t),
-      .mandatory = BIT(REMOVE_TRAFFIC_ENDPOINT_TRAFFIC_ENDPOINT_ID),
+      .mandatory = UPF_BIT(REMOVE_TRAFFIC_ENDPOINT_TRAFFIC_ENDPOINT_ID),
       .size = ARRAY_LEN(pfcp_remove_traffic_endpoint_group),
       .group = pfcp_remove_traffic_endpoint_group,
     },
@@ -6978,7 +6978,7 @@ static struct pfcp_ie_def vendor_tp_specs[] =
    {
      .name = "TP: Error Report",
      .length = sizeof(pfcp_tp_error_report_t),
-     .mandatory = BIT(TP_ERROR_REPORT_TP_ERROR_MESSAGE),
+     .mandatory = UPF_BIT(TP_ERROR_REPORT_TP_ERROR_MESSAGE),
      .size = ARRAY_LEN(pfcp_tp_error_report_group),
      .group = pfcp_tp_error_report_group,
     },
@@ -7706,7 +7706,7 @@ static struct pfcp_ie_def msg_specs[] =
     [PFCP_HEARTBEAT_REQUEST] =
     {
       .length = sizeof(pfcp_heartbeat_request_t),
-      .mandatory = BIT(HEARTBEAT_REQUEST_RECOVERY_TIME_STAMP),
+      .mandatory = UPF_BIT(HEARTBEAT_REQUEST_RECOVERY_TIME_STAMP),
       .size = ARRAY_LEN(pfcp_heartbeat_request_group),
       .group = pfcp_heartbeat_request_group,
     },
@@ -7714,7 +7714,7 @@ static struct pfcp_ie_def msg_specs[] =
     [PFCP_HEARTBEAT_RESPONSE] =
     {
       .length = sizeof(pfcp_simple_response_t),
-      .mandatory = BIT(PFCP_RESPONSE_RECOVERY_TIME_STAMP),
+      .mandatory = UPF_BIT(PFCP_RESPONSE_RECOVERY_TIME_STAMP),
       .size = ARRAY_LEN(pfcp_simple_response_group),
       .group = pfcp_simple_response_group,
     },
@@ -7730,7 +7730,7 @@ static struct pfcp_ie_def msg_specs[] =
     {
       .length = sizeof(pfcp_association_setup_request_t),
       .mandatory = (BIT(ASSOCIATION_SETUP_REQUEST_NODE_ID) |
-		    BIT(ASSOCIATION_SETUP_REQUEST_RECOVERY_TIME_STAMP)),
+		    UPF_BIT(ASSOCIATION_SETUP_REQUEST_RECOVERY_TIME_STAMP)),
       .size = ARRAY_LEN(pfcp_association_setup_request_group),
       .group = pfcp_association_setup_request_group,
     },
@@ -7739,8 +7739,8 @@ static struct pfcp_ie_def msg_specs[] =
     {
       .length = sizeof(pfcp_association_procedure_response_t),
       .mandatory = (BIT(ASSOCIATION_PROCEDURE_RESPONSE_NODE_ID) |
-		    BIT(ASSOCIATION_PROCEDURE_RESPONSE_CAUSE) |
-		    BIT(ASSOCIATION_PROCEDURE_RESPONSE_RECOVERY_TIME_STAMP)),
+		    UPF_BIT(ASSOCIATION_PROCEDURE_RESPONSE_CAUSE) |
+		    UPF_BIT(ASSOCIATION_PROCEDURE_RESPONSE_RECOVERY_TIME_STAMP)),
       .size = ARRAY_LEN(pfcp_association_setup_response_group),
       .group = pfcp_association_setup_response_group,
     },
@@ -7748,7 +7748,7 @@ static struct pfcp_ie_def msg_specs[] =
     [PFCP_ASSOCIATION_UPDATE_REQUEST] =
     {
       .length = sizeof(pfcp_association_update_request_t),
-      .mandatory = BIT(ASSOCIATION_UPDATE_REQUEST_NODE_ID),
+      .mandatory = UPF_BIT(ASSOCIATION_UPDATE_REQUEST_NODE_ID),
       .size = ARRAY_LEN(pfcp_association_update_request_group),
       .group = pfcp_association_update_request_group,
     },
@@ -7757,7 +7757,7 @@ static struct pfcp_ie_def msg_specs[] =
     {
       .length = sizeof(pfcp_association_procedure_response_t),
       .mandatory = (BIT(ASSOCIATION_PROCEDURE_RESPONSE_NODE_ID) |
-		    BIT(ASSOCIATION_PROCEDURE_RESPONSE_CAUSE)),
+		    UPF_BIT(ASSOCIATION_PROCEDURE_RESPONSE_CAUSE)),
       .size = ARRAY_LEN(pfcp_association_update_response_group),
       .group = pfcp_association_update_response_group,
     },
@@ -7765,7 +7765,7 @@ static struct pfcp_ie_def msg_specs[] =
     [PFCP_ASSOCIATION_RELEASE_REQUEST] =
     {
       .length = sizeof(pfcp_association_release_request_t),
-      .mandatory = BIT(ASSOCIATION_RELEASE_REQUEST_NODE_ID),
+      .mandatory = UPF_BIT(ASSOCIATION_RELEASE_REQUEST_NODE_ID),
       .size = ARRAY_LEN(pfcp_association_release_request_group),
       .group = pfcp_association_release_request_group,
     },
@@ -7774,7 +7774,7 @@ static struct pfcp_ie_def msg_specs[] =
     {
       .length = sizeof(pfcp_simple_response_t),
       .mandatory = (BIT(PFCP_RESPONSE_NODE_ID) |
-		    BIT(PFCP_RESPONSE_CAUSE)),
+		    UPF_BIT(PFCP_RESPONSE_CAUSE)),
       .size = ARRAY_LEN(pfcp_simple_response_group),
       .group = pfcp_simple_response_group,
     },
@@ -7783,7 +7783,7 @@ static struct pfcp_ie_def msg_specs[] =
     {
       .length = sizeof(pfcp_node_report_request_t),
       .mandatory = (BIT(NODE_REPORT_REQUEST_NODE_ID) |
-		    BIT(NODE_REPORT_REQUEST_NODE_REPORT_TYPE)),
+		    UPF_BIT(NODE_REPORT_REQUEST_NODE_REPORT_TYPE)),
       .size = ARRAY_LEN(pfcp_node_report_request_group),
       .group = pfcp_node_report_request_group,
     },
@@ -7792,7 +7792,7 @@ static struct pfcp_ie_def msg_specs[] =
     {
       .length = sizeof(pfcp_simple_response_t),
       .mandatory = (BIT(PFCP_RESPONSE_NODE_ID) |
-		    BIT(PFCP_RESPONSE_CAUSE)),
+		    UPF_BIT(PFCP_RESPONSE_CAUSE)),
       .size = ARRAY_LEN(pfcp_simple_response_group),
       .group = pfcp_simple_response_group,
     },
@@ -7800,7 +7800,7 @@ static struct pfcp_ie_def msg_specs[] =
     [PFCP_SESSION_SET_DELETION_REQUEST] =
     {
       .length = sizeof(pfcp_session_set_deletion_request_t),
-      .mandatory = BIT(SESSION_SET_DELETION_REQUEST_NODE_ID),
+      .mandatory = UPF_BIT(SESSION_SET_DELETION_REQUEST_NODE_ID),
       .size = ARRAY_LEN(pfcp_session_set_deletion_request_group),
       .group = pfcp_session_set_deletion_request_group,
     },
@@ -7809,7 +7809,7 @@ static struct pfcp_ie_def msg_specs[] =
     {
       .length = sizeof(pfcp_simple_response_t),
       .mandatory = (BIT(PFCP_RESPONSE_NODE_ID) |
-		    BIT(PFCP_RESPONSE_CAUSE)),
+		    UPF_BIT(PFCP_RESPONSE_CAUSE)),
       .size = ARRAY_LEN(pfcp_simple_response_group),
       .group = pfcp_simple_response_group,
     },
@@ -7818,9 +7818,9 @@ static struct pfcp_ie_def msg_specs[] =
     {
       .length = sizeof(pfcp_session_establishment_request_t),
       .mandatory = (BIT(SESSION_ESTABLISHMENT_REQUEST_NODE_ID) |
-		    BIT(SESSION_ESTABLISHMENT_REQUEST_F_SEID) |
-		    BIT(SESSION_ESTABLISHMENT_REQUEST_CREATE_PDR) |
-		    BIT(SESSION_ESTABLISHMENT_REQUEST_CREATE_FAR)),
+		    UPF_BIT(SESSION_ESTABLISHMENT_REQUEST_F_SEID) |
+		    UPF_BIT(SESSION_ESTABLISHMENT_REQUEST_CREATE_PDR) |
+		    UPF_BIT(SESSION_ESTABLISHMENT_REQUEST_CREATE_FAR)),
       .size = ARRAY_LEN(pfcp_session_establishment_request_group),
       .group = pfcp_session_establishment_request_group,
     },
@@ -7829,8 +7829,8 @@ static struct pfcp_ie_def msg_specs[] =
     {
       .length = sizeof(pfcp_session_procedure_response_t),
       .mandatory = (BIT(SESSION_PROCEDURE_RESPONSE_NODE_ID) |
-		    BIT(SESSION_PROCEDURE_RESPONSE_CAUSE) |
-		    BIT(SESSION_PROCEDURE_RESPONSE_UP_F_SEID)),
+		    UPF_BIT(SESSION_PROCEDURE_RESPONSE_CAUSE) |
+		    UPF_BIT(SESSION_PROCEDURE_RESPONSE_UP_F_SEID)),
       .size = ARRAY_LEN(pfcp_session_establishment_response_group),
       .group = pfcp_session_establishment_response_group,
     },
@@ -7847,7 +7847,7 @@ static struct pfcp_ie_def msg_specs[] =
     [PFCP_SESSION_MODIFICATION_RESPONSE] =
     {
       .length = sizeof(pfcp_session_procedure_response_t),
-      .mandatory = BIT(SESSION_PROCEDURE_RESPONSE_CAUSE),
+      .mandatory = UPF_BIT(SESSION_PROCEDURE_RESPONSE_CAUSE),
       .size = ARRAY_LEN(pfcp_session_modification_response_group),
       .group = pfcp_session_modification_response_group,
     },
@@ -7860,7 +7860,7 @@ static struct pfcp_ie_def msg_specs[] =
     [PFCP_SESSION_DELETION_RESPONSE] =
     {
       .length = sizeof(pfcp_session_procedure_response_t),
-      .mandatory = BIT(SESSION_PROCEDURE_RESPONSE_CAUSE),
+      .mandatory = UPF_BIT(SESSION_PROCEDURE_RESPONSE_CAUSE),
       .size = ARRAY_LEN(pfcp_session_deletion_response_group),
       .group = pfcp_session_deletion_response_group,
     },
@@ -7868,7 +7868,7 @@ static struct pfcp_ie_def msg_specs[] =
     [PFCP_SESSION_REPORT_REQUEST] =
     {
       .length = sizeof(pfcp_session_report_request_t),
-      .mandatory = BIT(SESSION_REPORT_REQUEST_REPORT_TYPE),
+      .mandatory = UPF_BIT(SESSION_REPORT_REQUEST_REPORT_TYPE),
       .size = ARRAY_LEN(pfcp_session_report_request_group),
       .group = pfcp_session_report_request_group,
     },
@@ -7876,7 +7876,7 @@ static struct pfcp_ie_def msg_specs[] =
     [PFCP_SESSION_REPORT_RESPONSE] =
     {
       .length = sizeof(pfcp_session_report_response_t),
-      .mandatory = BIT(SESSION_REPORT_RESPONSE_CAUSE),
+      .mandatory = UPF_BIT(SESSION_REPORT_RESPONSE_CAUSE),
       .size = ARRAY_LEN(pfcp_session_report_response_group),
       .group = pfcp_session_report_response_group,
     },
@@ -8021,7 +8021,7 @@ decode_group (u8 * p, int len, const struct pfcp_ie_def *grp_def,
 	r = decode_vector_ie (ie_def, p + pos, length, v, err);
       else
 	{
-	  if (ISSET_BIT (grp->fields, id))
+	  if (UPF_ISSET_BIT (grp->fields, id))
 	    /* duplicate IE */
 	    vec_add1 (grp->ies, ie);
 	  else
@@ -8029,7 +8029,7 @@ decode_group (u8 * p, int len, const struct pfcp_ie_def *grp_def,
 	}
 
       if (r == 0)
-	SET_BIT (grp->fields, id);
+	UPF_SET_BIT (grp->fields, id);
 
     next:
       pos += length;
@@ -8151,7 +8151,7 @@ encode_group (const struct pfcp_ie_def *def, struct pfcp_group *grp,
       if (item->type == 0 && item->vendor == 0)
 	continue;
 
-      if (!ISSET_BIT (grp->fields, i))
+      if (!UPF_ISSET_BIT (grp->fields, i))
 	continue;
 
       ie_def = get_ie_def (item);
@@ -8302,7 +8302,7 @@ free_group (const struct pfcp_ie_def *def, struct pfcp_group *grp)
       if (item->type == 0)
 	continue;
 
-      if (!ISSET_BIT (grp->fields, i))
+      if (!UPF_ISSET_BIT (grp->fields, i))
 	continue;
 
       if (item->is_array)
@@ -8379,7 +8379,7 @@ format_group (u8 * s, va_list * args)
       if (item->type == 0)
 	continue;
 
-      if (!ISSET_BIT (grp->fields, i))
+      if (!UPF_ISSET_BIT (grp->fields, i))
 	continue;
 
       ie_def = get_ie_def (item);
