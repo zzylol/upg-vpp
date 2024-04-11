@@ -215,7 +215,7 @@ upf_forward (vlib_main_t * vm, vlib_node_runtime_t * node,
 		    {
 		      b->flags &= ~(VNET_BUFFER_F_OFFLOAD_TCP_CKSUM |
 				    VNET_BUFFER_F_OFFLOAD_UDP_CKSUM |
-				    VNET_BUFFER_F_OFFLOAD_IP_CKSUM);
+				    VNET_BUFFER_OFFLOAD_F_IP_CKSUM);
 		      upf_nwi_if_and_fib_index
 			(gtm, FIB_PROTOCOL_IP4, far->forward.nwi_index,
 			 &vnet_buffer (b)->sw_if_index[VLIB_RX],

@@ -218,7 +218,7 @@ upf_proxy_output (vlib_main_t * vm, vlib_node_runtime_t * node,
 
 	  b->flags &= ~VNET_BUFFER_F_OFFLOAD_TCP_CKSUM;
 	  b->flags &= ~VNET_BUFFER_F_OFFLOAD_UDP_CKSUM;
-	  b->flags &= ~VNET_BUFFER_F_OFFLOAD_IP_CKSUM;
+	  b->flags &= ~VNET_BUFFER_OFFLOAD_F_IP_CKSUM;
 
 	  next = ft_next_map_next[flow_next (flow, direction)];
 	  if (next == UPF_PROXY_OUTPUT_NEXT_PROCESS)
