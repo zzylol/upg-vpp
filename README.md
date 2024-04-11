@@ -181,3 +181,9 @@ pre-releases.
 [GHACTIONS]: https://github.com/features/actions
 
 <a name="footnote-1">1</a>: Historically, the project was named simply "UPF". There may be more UPF->UPG renames later
+
+# Apply UPF patches
+```
+cd patches
+find . -iname '*.patch' -execdir sh -c 'patch -p1 -N -d ../ < $0' {} \;
+```
