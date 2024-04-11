@@ -456,9 +456,9 @@
 +++ b/upf/upf.h	2021-06-09 00:11:42.043580712 +0200
 @@ -431,6 +431,7 @@
    u16 flags;
- #define FAR_F_REDIRECT_INFORMATION	BIT(0)
- #define FAR_F_OUTER_HEADER_CREATION	BIT(1)
-+#define FAR_F_FORWARDING_POLICY BIT(2) // forwarding policy bit 
+ #define FAR_F_REDIRECT_INFORMATION	UPF_BIT(0)
+ #define FAR_F_OUTER_HEADER_CREATION	UPF_BIT(1)
++#define FAR_F_FORWARDING_POLICY UPF_BIT(2) // forwarding policy bit 
  
    pfcp_destination_interface_t dst_intf;
    u32 dst_sw_if_index;

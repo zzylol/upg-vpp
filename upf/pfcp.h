@@ -9,10 +9,10 @@
 #include <vnet/ethernet/mac_address.h>
 #include <vnet/ip/ip.h>
 
-#define BIT(n)              (1LLU << (n))
-#define SET_BIT(mask, n)    ((mask) |= BIT(n))
-#define RESET_BIT(mask, n)  ((mask) &= ~BIT(n))
-#define ISSET_BIT(mask, n)  (!!((mask) & BIT(n)))
+#define UPF_BIT(n)              (1LLU << (n))
+#define UPF_SET_BIT(mask, n)    ((mask) |= UPF_BIT(n))
+#define UPF_RESET_BIT(mask, n)  ((mask) &= ~BIT(n))
+#define UPF_ISSET_BIT(mask, n)  (!!((mask) & UPF_BIT(n)))
 
 typedef struct __attribute__((packed))
 {
@@ -121,12 +121,12 @@ typedef struct
   u64 dl;
 } pfcp_volume_ie_t;
 
-#define PFCP_VOLUME_TOVOL			BIT(0)
-#define PFCP_VOLUME_ULVOL			BIT(1)
-#define PFCP_VOLUME_DLVOL			BIT(2)
-#define PFCP_VOLUME_TONOP			BIT(3)
-#define PFCP_VOLUME_ULNOP			BIT(4)
-#define PFCP_VOLUME_DLNOP			BIT(5)
+#define PFCP_VOLUME_TOVOL			UPF_BIT(0)
+#define PFCP_VOLUME_ULVOL			UPF_BIT(1)
+#define PFCP_VOLUME_DLVOL			UPF_BIT(2)
+#define PFCP_VOLUME_TONOP			UPF_BIT(3)
+#define PFCP_VOLUME_ULNOP			UPF_BIT(4)
+#define PFCP_VOLUME_DLNOP			UPF_BIT(5)
 #define PFCP_VOLUME_VOLUME					\
   (PFCP_VOLUME_TOVOL | PFCP_VOLUME_ULVOL | PFCP_VOLUME_DLVOL)
 #define PFCP_VOLUME_PACKETS					\
@@ -194,10 +194,10 @@ typedef u8 pfcp_source_interface_t;
 typedef struct
 {
   u8 flags;
-#define F_TEID_V4					BIT(0)
-#define F_TEID_V6					BIT(1)
-#define F_TEID_CH					BIT(2)
-#define F_TEID_CHID					BIT(3)
+#define F_TEID_V4					UPF_BIT(0)
+#define F_TEID_V6					UPF_BIT(1)
+#define F_TEID_CH					UPF_BIT(2)
+#define F_TEID_CHID					UPF_BIT(3)
 
   u32 teid;
   ip4_address_t ip4;
@@ -212,11 +212,11 @@ typedef u8 *pfcp_network_instance_t;
 typedef struct
 {
   u8 flags;
-#define F_SDF_FD					BIT(0)
-#define F_SDF_TTC					BIT(1)
-#define F_SDF_SPI					BIT(2)
-#define F_SDF_FL					BIT(3)
-#define F_SDF_BID					BIT(4)
+#define F_SDF_FD					UPF_BIT(0)
+#define F_SDF_TTC					UPF_BIT(1)
+#define F_SDF_SPI					UPF_BIT(2)
+#define F_SDF_FL					UPF_BIT(3)
+#define F_SDF_BID					UPF_BIT(4)
 
   u8 *flow;
   u16 tos_traffic_class;
@@ -277,22 +277,22 @@ typedef u32 pfcp_inactivity_detection_time_t;
 #define PFCP_IE_REPORTING_TRIGGERS			37
 typedef u32 pfcp_reporting_triggers_t;
 
-#define REPORTING_TRIGGER_PERIODIC_REPORTING		BIT(0)
-#define REPORTING_TRIGGER_VOLUME_THRESHOLD		BIT(1)
-#define REPORTING_TRIGGER_TIME_THRESHOLD		BIT(2)
-#define REPORTING_TRIGGER_QUOTA_HOLDING_TIME		BIT(3)
-#define REPORTING_TRIGGER_START_OF_TRAFFIC		BIT(4)
-#define REPORTING_TRIGGER_STOP_OF_TRAFFIC		BIT(5)
-#define REPORTING_TRIGGER_DROPPED_DL_TRAFFIC_THRESHOLD	BIT(6)
-#define REPORTING_TRIGGER_LINKED_USAGE_REPORTING	BIT(7)
-#define REPORTING_TRIGGER_VOLUME_QUOTA			BIT(8)
-#define REPORTING_TRIGGER_TIME_QUOTA			BIT(9)
-#define REPORTING_TRIGGER_ENVELOPE_CLOSURE		BIT(10)
-#define REPORTING_TRIGGER_MAC_ADDRESSES_REPORTING	BIT(11)
-#define REPORTING_TRIGGER_EVENT_THRESHOLD		BIT(12)
-#define REPORTING_TRIGGER_EVENT_QUOTA			BIT(13)
-#define REPORTING_TRIGGER_IP_MULTICAST_JOIN_LEAVE	BIT(14)
-#define REPORTING_TRIGGER_QUOTA_VALIDITY_TIME		BIT(15)
+#define REPORTING_TRIGGER_PERIODIC_REPORTING		UPF_BIT(0)
+#define REPORTING_TRIGGER_VOLUME_THRESHOLD		UPF_BIT(1)
+#define REPORTING_TRIGGER_TIME_THRESHOLD		UPF_BIT(2)
+#define REPORTING_TRIGGER_QUOTA_HOLDING_TIME		UPF_BIT(3)
+#define REPORTING_TRIGGER_START_OF_TRAFFIC		UPF_BIT(4)
+#define REPORTING_TRIGGER_STOP_OF_TRAFFIC		UPF_BIT(5)
+#define REPORTING_TRIGGER_DROPPED_DL_TRAFFIC_THRESHOLD	UPF_BIT(6)
+#define REPORTING_TRIGGER_LINKED_USAGE_REPORTING	UPF_BIT(7)
+#define REPORTING_TRIGGER_VOLUME_QUOTA			UPF_BIT(8)
+#define REPORTING_TRIGGER_TIME_QUOTA			UPF_BIT(9)
+#define REPORTING_TRIGGER_ENVELOPE_CLOSURE		UPF_BIT(10)
+#define REPORTING_TRIGGER_MAC_ADDRESSES_REPORTING	UPF_BIT(11)
+#define REPORTING_TRIGGER_EVENT_THRESHOLD		UPF_BIT(12)
+#define REPORTING_TRIGGER_EVENT_QUOTA			UPF_BIT(13)
+#define REPORTING_TRIGGER_IP_MULTICAST_JOIN_LEAVE	UPF_BIT(14)
+#define REPORTING_TRIGGER_QUOTA_VALIDITY_TIME		UPF_BIT(15)
 
 #define PFCP_IE_REDIRECT_INFORMATION			38
 typedef struct
@@ -318,13 +318,13 @@ typedef struct
 #define PFCP_IE_REPORT_TYPE				39
 typedef u8 pfcp_report_type_t;
 
-#define REPORT_TYPE_DLDR				BIT(0)
-#define REPORT_TYPE_USAR				BIT(1)
-#define REPORT_TYPE_ERIR				BIT(2)
-#define REPORT_TYPE_UPIR				BIT(3)
-#define REPORT_TYPE_PMIR				BIT(4)
-#define REPORT_TYPE_SESR				BIT(5)
-#define REPORT_TYPE_UISR				BIT(6)
+#define REPORT_TYPE_DLDR				UPF_BIT(0)
+#define REPORT_TYPE_USAR				UPF_BIT(1)
+#define REPORT_TYPE_ERIR				UPF_BIT(2)
+#define REPORT_TYPE_UPIR				UPF_BIT(3)
+#define REPORT_TYPE_PMIR				UPF_BIT(4)
+#define REPORT_TYPE_SESR				UPF_BIT(5)
+#define REPORT_TYPE_UISR				UPF_BIT(6)
 
 #define PFCP_IE_OFFENDING_IE				40
 typedef u32 pfcp_offending_ie_t;
@@ -348,64 +348,64 @@ typedef u8 pfcp_destination_interface_t;
 
 #define PFCP_IE_UP_FUNCTION_FEATURES			43
 typedef u64 pfcp_up_function_features_t;
-#define F_UPFF_BUCP					BIT(0)
-#define F_UPFF_DDND					BIT(1)
-#define F_UPFF_DLBD					BIT(2)
-#define F_UPFF_TRST					BIT(3)
-#define F_UPFF_FTUP					BIT(4)
-#define F_UPFF_PFDM					BIT(5)
-#define F_UPFF_HEEU					BIT(6)
-#define F_UPFF_TREU					BIT(7)
+#define F_UPFF_BUCP					UPF_BIT(0)
+#define F_UPFF_DDND					UPF_BIT(1)
+#define F_UPFF_DLBD					UPF_BIT(2)
+#define F_UPFF_TRST					UPF_BIT(3)
+#define F_UPFF_FTUP					UPF_BIT(4)
+#define F_UPFF_PFDM					UPF_BIT(5)
+#define F_UPFF_HEEU					UPF_BIT(6)
+#define F_UPFF_TREU					UPF_BIT(7)
 
-#define F_UPFF_EMPU					BIT(8)
-#define F_UPFF_PDIU					BIT(9)
-#define F_UPFF_UDBC					BIT(10)
-#define F_UPFF_QUOAC					BIT(11)
-#define F_UPFF_TRACE					BIT(12)
-#define F_UPFF_FRRT					BIT(13)
-#define F_UPFF_PFDE					BIT(14)
-#define F_UPFF_EPFAR					BIT(15)
+#define F_UPFF_EMPU					UPF_BIT(8)
+#define F_UPFF_PDIU					UPF_BIT(9)
+#define F_UPFF_UDBC					UPF_BIT(10)
+#define F_UPFF_QUOAC					UPF_BIT(11)
+#define F_UPFF_TRACE					UPF_BIT(12)
+#define F_UPFF_FRRT					UPF_BIT(13)
+#define F_UPFF_PFDE					UPF_BIT(14)
+#define F_UPFF_EPFAR					UPF_BIT(15)
 
-#define F_UPFF_DPDRA					BIT(16)
-#define F_UPFF_ADPDP					BIT(17)
-#define F_UPFF_UEIP					BIT(18)
-#define F_UPFF_SSET					BIT(19)
-#define F_UPFF_MNOP					BIT(20)
-#define F_UPFF_MTE					BIT(21)
-#define F_UPFF_BUNDL					BIT(22)
-#define F_UPFF_GCOM					BIT(23)
+#define F_UPFF_DPDRA					UPF_BIT(16)
+#define F_UPFF_ADPDP					UPF_BIT(17)
+#define F_UPFF_UEIP					UPF_BIT(18)
+#define F_UPFF_SSET					UPF_BIT(19)
+#define F_UPFF_MNOP					UPF_BIT(20)
+#define F_UPFF_MTE					UPF_BIT(21)
+#define F_UPFF_BUNDL					UPF_BIT(22)
+#define F_UPFF_GCOM					UPF_BIT(23)
 
-#define F_UPFF_MPAS					BIT(24)
-#define F_UPFF_RTTL					BIT(25)
-#define F_UPFF_VTIME					BIT(26)
-#define F_UPFF_NORP					BIT(27)
-#define F_UPFF_IPTV					BIT(28)
-#define F_UPFF_IP6PL					BIT(29)
-#define F_UPFF_TSCU					BIT(30)
-#define F_UPFF_MPTCP					BIT(31)
+#define F_UPFF_MPAS					UPF_BIT(24)
+#define F_UPFF_RTTL					UPF_BIT(25)
+#define F_UPFF_VTIME					UPF_BIT(26)
+#define F_UPFF_NORP					UPF_BIT(27)
+#define F_UPFF_IPTV					UPF_BIT(28)
+#define F_UPFF_IP6PL					UPF_BIT(29)
+#define F_UPFF_TSCU					UPF_BIT(30)
+#define F_UPFF_MPTCP					UPF_BIT(31)
 
-#define F_UPFF_ATSSS_LL					BIT(32)
-#define F_UPFF_QFQM					BIT(33)
-#define F_UPFF_GPQM					BIT(34)
+#define F_UPFF_ATSSS_LL					UPF_BIT(32)
+#define F_UPFF_QFQM					UPF_BIT(33)
+#define F_UPFF_GPQM					UPF_BIT(34)
 
 
 #define PFCP_IE_APPLY_ACTION				44
 typedef u8 pfcp_apply_action_t;
-#define F_APPLY_DROP					BIT(0)
-#define F_APPLY_FORW					BIT(1)
-#define F_APPLY_BUFF					BIT(2)
-#define F_APPLY_NOCP					BIT(3)
-#define F_APPLY_DUPL					BIT(4)
-#define F_APPLY_IPMA					BIT(5)
-#define F_APPLY_IPMD					BIT(6)
+#define F_APPLY_DROP					UPF_BIT(0)
+#define F_APPLY_FORW					UPF_BIT(1)
+#define F_APPLY_BUFF					UPF_BIT(2)
+#define F_APPLY_NOCP					UPF_BIT(3)
+#define F_APPLY_DUPL					UPF_BIT(4)
+#define F_APPLY_IPMA					UPF_BIT(5)
+#define F_APPLY_IPMD					UPF_BIT(6)
 
 
 #define PFCP_IE_DOWNLINK_DATA_SERVICE_INFORMATION	45
 typedef struct
 {
   u8 flags;
-#define F_DDSI_PPI					BIT(0)
-#define F_DDSI_QFII					BIT(1)
+#define F_DDSI_PPI					UPF_BIT(0)
+#define F_DDSI_QFII					UPF_BIT(1)
 
   u8 paging_policy_indication;
   u8 qfi;
@@ -422,13 +422,13 @@ typedef u16 pfcp_dl_buffering_suggested_packet_count_t;
 
 #define PFCP_IE_PFCPSMREQ_FLAGS				49
 typedef u8 pfcp_pfcpsmreq_flags_t;
-#define PFCPSMREQ_DROBU					BIT(0)
-#define PFCPSMREQ_SNDEM					BIT(1)
-#define PFCPSMREQ_QAURR					BIT(2)
+#define PFCPSMREQ_DROBU					UPF_BIT(0)
+#define PFCPSMREQ_SNDEM					UPF_BIT(1)
+#define PFCPSMREQ_QAURR					UPF_BIT(2)
 
 #define PFCP_IE_PFCPSRRSP_FLAGS				50
 typedef u8 pfcp_pfcpsrrsp_flags_t;
-#define PFCPSRRSP_DROBU					BIT(0)
+#define PFCPSRRSP_DROBU					UPF_BIT(0)
 
 #define PFCP_IE_LOAD_CONTROL_INFORMATION		51
 
@@ -450,8 +450,8 @@ typedef u16 pfcp_pdr_id_t;
 typedef struct
 {
   u8 flags;
-#define IE_F_SEID_IP_ADDRESS_V4				BIT(1)
-#define IE_F_SEID_IP_ADDRESS_V6				BIT(0)
+#define IE_F_SEID_IP_ADDRESS_V4				UPF_BIT(1)
+#define IE_F_SEID_IP_ADDRESS_V6				UPF_BIT(0)
 
   u64 seid;
   ip4_address_t ip4;
@@ -479,15 +479,15 @@ typedef struct
 #define PFCP_IE_PFD_CONTENTS				61
 typedef struct
 {
-#define F_PFD_C_FD					BIT(0)
-#define F_PFD_C_URL					BIT(1)
-#define F_PFD_C_DN					BIT(2)
-#define F_PFD_C_CP					BIT(3)
-#define F_PFD_C_DNP					BIT(4)
+#define F_PFD_C_FD					UPF_BIT(0)
+#define F_PFD_C_URL					UPF_BIT(1)
+#define F_PFD_C_DN					UPF_BIT(2)
+#define F_PFD_C_CP					UPF_BIT(3)
+#define F_PFD_C_DNP					UPF_BIT(4)
   /* not implemented
-     #define F_PFD_C_AFD                                        BIT(5)
-     #define F_PFD_C_AURL                                       BIT(6)
-     #define F_PFD_C_ADNP                                       BIT(7)
+     #define F_PFD_C_AFD                                        UPF_BIT(5)
+     #define F_PFD_C_AURL                                       UPF_BIT(6)
+     #define F_PFD_C_ADNP                                       UPF_BIT(7)
    */
 #define F_PFD_C_MASK \
   (F_PFD_C_FD | F_PFD_C_URL | F_PFD_C_DN | F_PFD_C_CP | F_PFD_C_DNP)
@@ -502,35 +502,35 @@ typedef struct
 #define PFCP_IE_MEASUREMENT_METHOD			62
 typedef u8 pfcp_measurement_method_t;
 
-#define MEASUREMENT_METHOD_DURATION			BIT(0)
-#define MEASUREMENT_METHOD_VOLUME			BIT(1)
-#define MEASUREMENT_METHOD_EVENT			BIT(2)
+#define MEASUREMENT_METHOD_DURATION			UPF_BIT(0)
+#define MEASUREMENT_METHOD_VOLUME			UPF_BIT(1)
+#define MEASUREMENT_METHOD_EVENT			UPF_BIT(2)
 
 #define PFCP_IE_USAGE_REPORT_TRIGGER			63
 typedef u32 pfcp_usage_report_trigger_t;
 
-#define USAGE_REPORT_TRIGGER_PERIODIC_REPORTING			BIT(0)
-#define USAGE_REPORT_TRIGGER_VOLUME_THRESHOLD			BIT(1)
-#define USAGE_REPORT_TRIGGER_TIME_THRESHOLD			BIT(2)
-#define USAGE_REPORT_TRIGGER_QUOTA_HOLDING_TIME			BIT(3)
-#define USAGE_REPORT_TRIGGER_START_OF_TRAFFIC			BIT(4)
-#define USAGE_REPORT_TRIGGER_STOP_OF_TRAFFIC			BIT(5)
-#define USAGE_REPORT_TRIGGER_DROPPED_DL_TRAFFIC_THRESHOLD	BIT(6)
-#define USAGE_REPORT_TRIGGER_IMMEDIATE_REPORT			BIT(7)
+#define USAGE_REPORT_TRIGGER_PERIODIC_REPORTING			UPF_BIT(0)
+#define USAGE_REPORT_TRIGGER_VOLUME_THRESHOLD			UPF_BIT(1)
+#define USAGE_REPORT_TRIGGER_TIME_THRESHOLD			UPF_BIT(2)
+#define USAGE_REPORT_TRIGGER_QUOTA_HOLDING_TIME			UPF_BIT(3)
+#define USAGE_REPORT_TRIGGER_START_OF_TRAFFIC			UPF_BIT(4)
+#define USAGE_REPORT_TRIGGER_STOP_OF_TRAFFIC			UPF_BIT(5)
+#define USAGE_REPORT_TRIGGER_DROPPED_DL_TRAFFIC_THRESHOLD	UPF_BIT(6)
+#define USAGE_REPORT_TRIGGER_IMMEDIATE_REPORT			UPF_BIT(7)
 
-#define USAGE_REPORT_TRIGGER_VOLUME_QUOTA			BIT(8)
-#define USAGE_REPORT_TRIGGER_TIME_QUOTA				BIT(9)
-#define USAGE_REPORT_TRIGGER_LINKED_USAGE_REPORTING		BIT(10)
-#define USAGE_REPORT_TRIGGER_TERMINATION_REPORT			BIT(11)
-#define USAGE_REPORT_TRIGGER_MONITORING_TIME			BIT(12)
-#define USAGE_REPORT_TRIGGER_ENVELOPE_CLOSURE			BIT(13)
-#define USAGE_REPORT_TRIGGER_MAC_ADDRESSES_REPORTING		BIT(14)
-#define USAGE_REPORT_TRIGGER_EVENT_THRESHOLD			BIT(15)
+#define USAGE_REPORT_TRIGGER_VOLUME_QUOTA			UPF_BIT(8)
+#define USAGE_REPORT_TRIGGER_TIME_QUOTA				UPF_BIT(9)
+#define USAGE_REPORT_TRIGGER_LINKED_USAGE_REPORTING		UPF_BIT(10)
+#define USAGE_REPORT_TRIGGER_TERMINATION_REPORT			UPF_BIT(11)
+#define USAGE_REPORT_TRIGGER_MONITORING_TIME			UPF_BIT(12)
+#define USAGE_REPORT_TRIGGER_ENVELOPE_CLOSURE			UPF_BIT(13)
+#define USAGE_REPORT_TRIGGER_MAC_ADDRESSES_REPORTING		UPF_BIT(14)
+#define USAGE_REPORT_TRIGGER_EVENT_THRESHOLD			UPF_BIT(15)
 
-#define USAGE_REPORT_TRIGGER_EVENT_QUOTA			BIT(16)
-#define USAGE_REPORT_TRIGGER_TERMINATION_BY_UP_FUNCTION_REPORT	BIT(17)
-#define USAGE_REPORT_TRIGGER_IP_MULTICAST_JOIN_LEAVE		BIT(18)
-#define USAGE_REPORT_TRIGGER_QUOTA_VALIDITY_TIME		BIT(19)
+#define USAGE_REPORT_TRIGGER_EVENT_QUOTA			UPF_BIT(16)
+#define USAGE_REPORT_TRIGGER_TERMINATION_BY_UP_FUNCTION_REPORT	UPF_BIT(17)
+#define USAGE_REPORT_TRIGGER_IP_MULTICAST_JOIN_LEAVE		UPF_BIT(18)
+#define USAGE_REPORT_TRIGGER_QUOTA_VALIDITY_TIME		UPF_BIT(19)
 
 #define PFCP_IE_MEASUREMENT_PERIOD			64
 typedef u32 pfcp_measurement_period_t;
@@ -591,8 +591,8 @@ typedef u32 pfcp_quota_holding_time_t;
 typedef struct
 {
   u8 flags;
-#define DDTT_DLPA					BIT(0)
-#define DDTT_DLBY					BIT(1)
+#define DDTT_DLPA					UPF_BIT(0)
+#define DDTT_DLBY					UPF_BIT(1)
 
   u64 downlink_packets;
   u64 downlink_volume;
@@ -627,16 +627,16 @@ typedef u32 pfcp_linked_urr_id_t;
 typedef struct
 {
   u16 description;
-#define OUTER_HEADER_CREATION_GTP_IP4			BIT(0)
-#define OUTER_HEADER_CREATION_GTP_IP6			BIT(1)
-#define OUTER_HEADER_CREATION_UDP_IP4			BIT(2)
-#define OUTER_HEADER_CREATION_UDP_IP6			BIT(3)
-#define OUTER_HEADER_CREATION_IP4			BIT(4)
-#define OUTER_HEADER_CREATION_IP6			BIT(5)
-#define OUTER_HEADER_CREATION_C_TAG			BIT(6)
-#define OUTER_HEADER_CREATION_S_TAG			BIT(7)
-#define OUTER_HEADER_CREATION_N19_IND			BIT(8)
-#define OUTER_HEADER_CREATION_N6_IND			BIT(9)
+#define OUTER_HEADER_CREATION_GTP_IP4			UPF_BIT(0)
+#define OUTER_HEADER_CREATION_GTP_IP6			UPF_BIT(1)
+#define OUTER_HEADER_CREATION_UDP_IP4			UPF_BIT(2)
+#define OUTER_HEADER_CREATION_UDP_IP6			UPF_BIT(3)
+#define OUTER_HEADER_CREATION_IP4			UPF_BIT(4)
+#define OUTER_HEADER_CREATION_IP6			UPF_BIT(5)
+#define OUTER_HEADER_CREATION_C_TAG			UPF_BIT(6)
+#define OUTER_HEADER_CREATION_S_TAG			UPF_BIT(7)
+#define OUTER_HEADER_CREATION_N19_IND			UPF_BIT(8)
+#define OUTER_HEADER_CREATION_N6_IND			UPF_BIT(9)
 #define OUTER_HEADER_CREATION_GTP_ANY					\
   (OUTER_HEADER_CREATION_GTP_IP4 | OUTER_HEADER_CREATION_GTP_IP6)
 #define OUTER_HEADER_CREATION_UDP_ANY					\
@@ -664,20 +664,20 @@ typedef u8 pfcp_bar_id_t;
 
 #define PFCP_IE_CP_FUNCTION_FEATURES			89
 typedef u8 pfcp_cp_function_features_t;
-#define F_CPFF_LOAD					BIT(0)
-#define F_CPFF_OVRL					BIT(1)
-#define F_CPFF_EPFAR					BIT(2)
-#define F_CPFF_SSET					BIT(3)
-#define F_CPFF_BUNDL					BIT(4)
-#define F_CPFF_MPAS					BIT(5)
-#define F_CPFF_ARDR					BIT(6)
+#define F_CPFF_LOAD					UPF_BIT(0)
+#define F_CPFF_OVRL					UPF_BIT(1)
+#define F_CPFF_EPFAR					UPF_BIT(2)
+#define F_CPFF_SSET					UPF_BIT(3)
+#define F_CPFF_BUNDL					UPF_BIT(4)
+#define F_CPFF_MPAS					UPF_BIT(5)
+#define F_CPFF_ARDR					UPF_BIT(6)
 
 #define PFCP_IE_USAGE_INFORMATION			90
 typedef u8 pfcp_usage_information_t;
-#define USAGE_INFORMATION_BEFORE			BIT(0)
-#define USAGE_INFORMATION_AFTER				BIT(1)
-#define USAGE_INFORMATION_AFTER_QoS_ENFORCEMENT		BIT(2)
-#define USAGE_INFORMATION_BEFORE_QoS_ENFORCEMENT	BIT(3)
+#define USAGE_INFORMATION_BEFORE			UPF_BIT(0)
+#define USAGE_INFORMATION_AFTER				UPF_BIT(1)
+#define USAGE_INFORMATION_AFTER_QoS_ENFORCEMENT		UPF_BIT(2)
+#define USAGE_INFORMATION_BEFORE_QoS_ENFORCEMENT	UPF_BIT(3)
 
 #define PFCP_IE_APPLICATION_INSTANCE_ID			91
 typedef u8 *pfcp_application_instance_id_t;
@@ -693,13 +693,13 @@ typedef struct
 typedef struct
 {
   u8 flags;
-#define IE_UE_IP_ADDRESS_V6				BIT(0)
-#define IE_UE_IP_ADDRESS_V4				BIT(1)
-#define IE_UE_IP_ADDRESS_SD				BIT(2)
-#define IE_UE_IP_ADDRESS_IPv6D				BIT(3)
-#define IE_UE_IP_ADDRESS_CHV4				BIT(4)
-#define IE_UE_IP_ADDRESS_CHV6				BIT(5)
-#define IE_UE_IP_ADDRESS_IP6PL				BIT(6)
+#define IE_UE_IP_ADDRESS_V6				UPF_BIT(0)
+#define IE_UE_IP_ADDRESS_V4				UPF_BIT(1)
+#define IE_UE_IP_ADDRESS_SD				UPF_BIT(2)
+#define IE_UE_IP_ADDRESS_IPv6D				UPF_BIT(3)
+#define IE_UE_IP_ADDRESS_CHV4				UPF_BIT(4)
+#define IE_UE_IP_ADDRESS_CHV6				UPF_BIT(5)
+#define IE_UE_IP_ADDRESS_IP6PL				UPF_BIT(6)
 
   ip4_address_t ip4;
   ip6_address_t ip6;
@@ -717,10 +717,10 @@ typedef struct
 typedef struct
 {
   u8 flags;
-#define PACKET_RATE_ULPR				BIT(0)
-#define PACKET_RATE_DLPR				BIT(1)
-#define PACKET_RATE_RCSR				BIT(2)
-#define PACKET_RATE_APRC				BIT(3)
+#define PACKET_RATE_ULPR				UPF_BIT(0)
+#define PACKET_RATE_DLPR				UPF_BIT(1)
+#define PACKET_RATE_RCSR				UPF_BIT(2)
+#define PACKET_RATE_APRC				UPF_BIT(3)
 
   packet_rate_t ul;
   packet_rate_t dl;
@@ -748,8 +748,8 @@ typedef u32 pfcp_recovery_time_stamp_t;
 typedef struct
 {
   u8 flags;
-#define DL_FLM_TTC					BIT(0)
-#define DL_FLM_SCI					BIT(1)
+#define DL_FLM_TTC					UPF_BIT(0)
+#define DL_FLM_SCI					UPF_BIT(1)
 
   u16 tos_traffic_class;
   u16 service_class_indicator;
@@ -769,11 +769,11 @@ typedef struct
 typedef struct
 {
   u8 flags;
-#define MEASUREMENT_INFORMATION_MBQE			BIT(0)
-#define MEASUREMENT_INFORMATION_INAM			BIT(1)
-#define MEASUREMENT_INFORMATION_RADI			BIT(2)
-#define MEASUREMENT_INFORMATION_ISTM			BIT(3)
-#define MEASUREMENT_INFORMATION_MNOP			BIT(4)
+#define MEASUREMENT_INFORMATION_MBQE			UPF_BIT(0)
+#define MEASUREMENT_INFORMATION_INAM			UPF_BIT(1)
+#define MEASUREMENT_INFORMATION_RADI			UPF_BIT(2)
+#define MEASUREMENT_INFORMATION_ISTM			UPF_BIT(3)
+#define MEASUREMENT_INFORMATION_MNOP			UPF_BIT(4)
 #define MEASUREMENT_INFORMATION_MASK					\
   (MEASUREMENT_INFORMATION_MBQE | MEASUREMENT_INFORMATION_INAM |	\
    MEASUREMENT_INFORMATION_RADI | MEASUREMENT_INFORMATION_ISTM |	\
@@ -784,10 +784,10 @@ typedef struct
 typedef struct
 {
   u8 flags;
-#define NRT_USER_PLANE_PATH_FAILURE_REPORT		BIT(0)
-#define NRT_USER_PLANE_PATH_RECOVERY_REPORT		BIT(1)
-#define NRT_CLOCK_DRIFT_REPORT				BIT(2)
-#define NRT_GTP_U_PATH_QOS_REPORT			BIT(3)
+#define NRT_USER_PLANE_PATH_FAILURE_REPORT		UPF_BIT(0)
+#define NRT_USER_PLANE_PATH_RECOVERY_REPORT		UPF_BIT(1)
+#define NRT_CLOCK_DRIFT_REPORT				UPF_BIT(2)
+#define NRT_GTP_U_PATH_QOS_REPORT			UPF_BIT(3)
 #define NRT_MASK							\
   (NRT_USER_PLANE_PATH_FAILURE_REPORT | NRT_USER_PLANE_PATH_RECOVERY_REPORT | \
    NRT_CLOCK_DRIFT_REPORT | NRT_GTP_U_PATH_QOS_REPORT)
@@ -798,10 +798,10 @@ typedef struct
 #define PFCP_IE_REMOTE_GTP_U_PEER			103
 typedef struct
 {
-#define REMOTE_GTP_U_PEER_IP6				BIT(0)
-#define REMOTE_GTP_U_PEER_IP4				BIT(1)
-#define REMOTE_GTP_U_PEER_DI				BIT(2)
-#define REMOTE_GTP_U_PEER_NI				BIT(3)
+#define REMOTE_GTP_U_PEER_IP6				UPF_BIT(0)
+#define REMOTE_GTP_U_PEER_IP4				UPF_BIT(1)
+#define REMOTE_GTP_U_PEER_DI				UPF_BIT(2)
+#define REMOTE_GTP_U_PEER_NI				UPF_BIT(3)
 
   ip46_address_t ip;
   pfcp_destination_interface_t destination_interface;
@@ -829,15 +829,15 @@ typedef u32 pfcp_qer_id_t;
 typedef struct
 {
   u8 flags;
-#define OCI_ASSOCIATE_OCI_WITH_NODE_ID			BIT(0)
+#define OCI_ASSOCIATE_OCI_WITH_NODE_ID			UPF_BIT(0)
 } pfcp_oci_flags_t;
 
 #define PFCP_IE_PFCP_ASSOCIATION_RELEASE_REQUEST	111
 typedef struct
 {
   u8 flags;
-#define F_PFCP_ASSOCIATION_RELEASE_REQUEST_SARR		BIT(0)
-#define F_PFCP_ASSOCIATION_RELEASE_REQUEST_URSS		BIT(1)
+#define F_PFCP_ASSOCIATION_RELEASE_REQUEST_SARR		UPF_BIT(0)
+#define F_PFCP_ASSOCIATION_RELEASE_REQUEST_URSS		UPF_BIT(1)
 #define F_PFCP_ASSOCIATION_RELEASE_REQUEST_MASK				\
   (F_PFCP_ASSOCIATION_RELEASE_REQUEST_SARR | F_PFCP_ASSOCIATION_RELEASE_REQUEST_URSS)
 } pfcp_pfcp_association_release_request_t;
@@ -880,10 +880,10 @@ typedef struct
 typedef struct
 {
   u8 flags;
-#define USER_PLANE_IP_RESOURCE_INFORMATION_V4		BIT(0)
-#define USER_PLANE_IP_RESOURCE_INFORMATION_V6		BIT(1)
-#define USER_PLANE_IP_RESOURCE_INFORMATION_ASSONI	BIT(5)
-#define USER_PLANE_IP_RESOURCE_INFORMATION_ASSOSI	BIT(6)
+#define USER_PLANE_IP_RESOURCE_INFORMATION_V4		UPF_BIT(0)
+#define USER_PLANE_IP_RESOURCE_INFORMATION_V6		UPF_BIT(1)
+#define USER_PLANE_IP_RESOURCE_INFORMATION_ASSONI	UPF_BIT(5)
+#define USER_PLANE_IP_RESOURCE_INFORMATION_ASSOSI	UPF_BIT(6)
 #define USER_PLANE_IP_RESOURCE_INFORMATION_MASK	\
   (USER_PLANE_IP_RESOURCE_INFORMATION_V4 |	\
    USER_PLANE_IP_RESOURCE_INFORMATION_V6 |	\
@@ -923,7 +923,7 @@ typedef u32 pfcp_subsequent_time_quota_t;
 typedef struct
 {
   u8 flags;
-#define RQI_FLAG					BIT(0)
+#define RQI_FLAG					UPF_BIT(0)
 } pfcp_rqi_t;
 
 #define PFCP_IE_QFI					124
@@ -934,7 +934,7 @@ typedef u32 pfcp_query_urr_reference_t;
 
 #define PFCP_IE_ADDITIONAL_USAGE_REPORTS_INFORMATION	126
 typedef u16 pfcp_additional_usage_reports_information_t;
-#define AURI_FLAG					BIT(15)
+#define AURI_FLAG					UPF_BIT(15)
 
 #define PFCP_IE_CREATE_TRAFFIC_ENDPOINT			127
 #define PFCP_IE_CREATED_TRAFFIC_ENDPOINT		128
@@ -950,10 +950,10 @@ typedef u8 pfcp_traffic_endpoint_id_t;
 typedef struct
 {
   u8 flags;
-#define F_SOURCE_MAC					BIT(0)
-#define F_DESTINATION_MAC				BIT(1)
-#define F_UPPER_SOURCE_MAC				BIT(2)
-#define F_UPPER_DESTINATION_MAC				BIT(3)
+#define F_SOURCE_MAC					UPF_BIT(0)
+#define F_DESTINATION_MAC				UPF_BIT(1)
+#define F_UPPER_SOURCE_MAC				UPF_BIT(2)
+#define F_UPPER_DESTINATION_MAC				UPF_BIT(3)
 
   mac_address_t src_mac;
   mac_address_t dst_mac;
@@ -983,8 +983,8 @@ typedef u16 pfcp_ethertype_t;
 typedef struct
 {
   u8 flags;
-#define F_PROXY_ARP					BIT(0)
-#define F_PROXY_IP6_NS					BIT(1)
+#define F_PROXY_ARP					UPF_BIT(0)
+#define F_PROXY_IP6_NS					UPF_BIT(1)
 } pfcp_proxying_t;
 
 #define PFCP_IE_ETHERNET_FILTER_ID			138
@@ -994,7 +994,7 @@ typedef u32 pfcp_ethernet_filter_id_t;
 typedef struct
 {
   u8 flags;
-#define F_BIDIRECTIONAL_ETHERNET_FILTER			BIT(0)
+#define F_BIDIRECTIONAL_ETHERNET_FILTER			UPF_BIT(0)
 } pfcp_ethernet_filter_properties_t;
 
 #define PFCP_IE_SUGGESTED_BUFFERING_PACKETS_COUNT	140
@@ -1003,10 +1003,10 @@ typedef u8 pfcp_suggested_buffering_packets_count_t;
 #define PFCP_IE_USER_ID					141
 typedef struct
 {
-#define USER_ID_IMEI					BIT(0)
-#define USER_ID_IMSI					BIT(1)
-#define USER_ID_MSISDN					BIT(2)
-#define USER_ID_NAI					BIT(4)
+#define USER_ID_IMEI					UPF_BIT(0)
+#define USER_ID_IMSI					UPF_BIT(1)
+#define USER_ID_MSISDN					UPF_BIT(2)
+#define USER_ID_NAI					UPF_BIT(4)
 
   u8 imei_len;			/* length in bytes, not in digits */
   u8 imei[8];
@@ -1021,7 +1021,7 @@ typedef struct
 typedef struct
 {
   u8 flags;
-#define F_ETHERNET_INDICATION				BIT(0)
+#define F_ETHERNET_INDICATION				UPF_BIT(0)
 } pfcp_ethernet_pdu_session_information_t;
 
 #define PFCP_IE_ETHERNET_TRAFFIC_INFORMATION		143
@@ -1088,11 +1088,11 @@ typedef u8 pfcp_tgpp_interface_type_t;
 
 #define PFCP_IE_PFCPSRREQ_FLAGS				161
 typedef u8 pfcp_pfcpsrreq_flags_t;
-#define PFCPSRREQ_PSDBU					BIT(0)
+#define PFCPSRREQ_PSDBU					UPF_BIT(0)
 
 #define PFCP_IE_PFCPAUREQ_FLAGS				162
 typedef u8 pfcp_pfcpaureq_flags_t;
-#define PFCPAUREQ_PARPS					BIT(0)
+#define PFCPAUREQ_PARPS					UPF_BIT(0)
 
 #define PFCP_IE_ACTIVATION_TIME				163
 typedef u32 pfcp_activation_time_t;
@@ -1141,8 +1141,8 @@ typedef u8 *pfcp_ue_ip_address_pool_identity_t;
 typedef struct
 {
   u8 flags;
-#define ALTERNATIVE_SMF_IP_ADDRESS_V4			BIT(0)
-#define ALTERNATIVE_SMF_IP_ADDRESS_V6			BIT(1)
+#define ALTERNATIVE_SMF_IP_ADDRESS_V4			UPF_BIT(0)
+#define ALTERNATIVE_SMF_IP_ADDRESS_V6			UPF_BIT(1)
 
   ip4_address_t ip4;
   ip6_address_t ip6;
@@ -1155,15 +1155,15 @@ typedef u32 pfcp_quota_validity_time_t;
 
 #define PFCP_IE_IP_VERSION				258
 typedef u8 pfcp_ip_version_t;
-#define IP_VERSION_4					BIT(0)
-#define IP_VERSION_6					BIT(1)
+#define IP_VERSION_4					UPF_BIT(0)
+#define IP_VERSION_6					UPF_BIT(1)
 
 #define VENDOR_BBF					3561
 
 #define PFCP_IE_BBF_UP_FUNCTION_FEATURES		0
 typedef u32 pfcp_bbf_up_function_features_t;
 
-#define BBF_UP_NAT					BIT(6)
+#define BBF_UP_NAT					UPF_BIT(6)
 
 #define PFCP_IE_BBF_NAT_OUTSIDE_ADDRESS			14
 typedef ip4_address_t pfcp_bbf_nat_outside_address_t;
@@ -1177,7 +1177,7 @@ typedef struct
 
 #define PFCP_IE_BBF_APPLY_ACTION			15
 
-#define BBF_APPLY_ACTION_NAT				BIT(0)
+#define BBF_APPLY_ACTION_NAT				UPF_BIT(0)
 
 typedef u8 pfcp_bbf_apply_action_t;
 

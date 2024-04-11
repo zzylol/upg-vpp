@@ -474,9 +474,9 @@ typedef struct
 typedef struct
 {
   u16 flags;
-#define FAR_F_REDIRECT_INFORMATION	BIT(0)
-#define FAR_F_OUTER_HEADER_CREATION	BIT(1)
-#define FAR_F_FORWARDING_POLICY BIT(2) // forwarding policy bit 
+#define FAR_F_REDIRECT_INFORMATION	UPF_BIT(0)
+#define FAR_F_OUTER_HEADER_CREATION	UPF_BIT(1)
+#define FAR_F_FORWARDING_POLICY UPF_BIT(2) // forwarding policy bit 
 
   pfcp_destination_interface_t dst_intf;
   u32 dst_sw_if_index;
@@ -558,10 +558,10 @@ typedef struct
 /* Counter */
 
 #define URR_OK                  0
-#define URR_QUOTA_EXHAUSTED     BIT(0)
-#define URR_THRESHOLD_REACHED   BIT(1)
-#define URR_START_OF_TRAFFIC    BIT(2)
-#define URR_DROP_SESSION        BIT(3)
+#define URR_QUOTA_EXHAUSTED     UPF_BIT(0)
+#define URR_THRESHOLD_REACHED   UPF_BIT(1)
+#define URR_START_OF_TRAFFIC    UPF_BIT(2)
+#define URR_DROP_SESSION        UPF_BIT(3)
 
 typedef enum
 {
@@ -644,17 +644,17 @@ typedef struct
   u16 triggers;
 
   u8 status;
-#define URR_OVER_QUOTA                  BIT(0)
-#define URR_AFTER_MONITORING_TIME       BIT(1)
-#define URR_REPORTED                    BIT(2)
+#define URR_OVER_QUOTA                  UPF_BIT(0)
+#define URR_AFTER_MONITORING_TIME       UPF_BIT(1)
+#define URR_REPORTED                    UPF_BIT(2)
 
   u8 update_flags;
-#define PFCP_URR_UPDATE_VOLUME_QUOTA		BIT(0)
-#define PFCP_URR_UPDATE_TIME_QUOTA		BIT(1)
-#define PFCP_URR_UPDATE_TIME_THRESHOLD		BIT(2)
-#define PFCP_URR_UPDATE_MONITORING_TIME		BIT(3)
-#define PFCP_URR_UPDATE_MEASUREMENT_PERIOD	BIT(4)
-#define PFCP_URR_UPDATE_QUOTA_VALIDITY_TIME	BIT(5)
+#define PFCP_URR_UPDATE_VOLUME_QUOTA		UPF_BIT(0)
+#define PFCP_URR_UPDATE_TIME_QUOTA		UPF_BIT(1)
+#define PFCP_URR_UPDATE_TIME_THRESHOLD		UPF_BIT(2)
+#define PFCP_URR_UPDATE_MONITORING_TIME		UPF_BIT(3)
+#define PFCP_URR_UPDATE_MEASUREMENT_PERIOD	UPF_BIT(4)
+#define PFCP_URR_UPDATE_QUOTA_VALIDITY_TIME	UPF_BIT(5)
 
   u32 seq_no;
   f64 start_time;
@@ -704,7 +704,7 @@ typedef struct
   u32 id;
 
   u8 flags;
-#define PFCP_QER_MBR				BIT(0)
+#define PFCP_QER_MBR				UPF_BIT(0)
 
   u8 gate_status[UPF_DIRECTION_MAX];
 
@@ -752,10 +752,10 @@ typedef struct
     upf_urr_t *urr;
     upf_qer_t *qer;
     uint32_t flags;
-#define PFCP_SDF_IPV4	BIT(0)
-#define PFCP_SDF_IPV6	BIT(1)
-#define PFCP_ADR		BIT(2)
-#define PFCP_CLASSIFY	BIT(3)
+#define PFCP_SDF_IPV4	UPF_BIT(0)
+#define PFCP_SDF_IPV6	UPF_BIT(1)
+#define PFCP_ADR		UPF_BIT(2)
+#define PFCP_CLASSIFY	UPF_BIT(3)
 
     u16 proxy_precedence;
     u32 proxy_pdr_idx;
@@ -890,8 +890,8 @@ typedef struct
   u32 db_index;			/* index in ADR pool */
 } upf_adf_app_t;
 
-#define UPF_ADR_PROXY    BIT(0)
-#define UPF_ADR_IP_RULES BIT(1)
+#define UPF_ADR_PROXY    UPF_BIT(0)
+#define UPF_ADR_IP_RULES UPF_BIT(1)
 
 #define UPF_ADR_PROTO_HTTP  1
 #define UPF_ADR_PROTO_HTTPS 2

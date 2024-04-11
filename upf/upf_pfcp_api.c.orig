@@ -511,7 +511,7 @@ send_simple_response (pfcp_msg_t * req, u64 seid, u8 type,
 
 
 #define OPT(MSG,FIELD,VALUE,DEFAULT)					\
-  ((ISSET_BIT((MSG)->grp.fields, (FIELD))) ? MSG->VALUE : (DEFAULT))
+  ((UPF_ISSET_BIT((MSG)->grp.fields, (FIELD))) ? MSG->VALUE : (DEFAULT))
 
 static upf_nwi_t *
 lookup_nwi (u8 * name)
@@ -2360,9 +2360,9 @@ report_usage_ev (upf_session_t * sess, ip46_address_t * ue, upf_urr_t * urr,
       r->duration_measurement = duration;
     }
 
-  /* SET_BIT(r->grp.fields, USAGE_REPORT_APPLICATION_DETECTION_INFORMATION); */
-  /* SET_BIT(r->grp.fields, USAGE_REPORT_NETWORK_INSTANCE); */
-  /* SET_BIT(r->grp.fields, USAGE_REPORT_USAGE_INFORMATION); */
+  /* UPF_SET_BIT(r->grp.fields, USAGE_REPORT_APPLICATION_DETECTION_INFORMATION); */
+  /* UPF_SET_BIT(r->grp.fields, USAGE_REPORT_NETWORK_INSTANCE); */
+  /* UPF_SET_BIT(r->grp.fields, USAGE_REPORT_USAGE_INFORMATION); */
 
   urr->status &= ~URR_AFTER_MONITORING_TIME;
   urr->start_time += duration;
