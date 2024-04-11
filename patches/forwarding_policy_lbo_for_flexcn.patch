@@ -590,7 +590,7 @@
 -	//TODO: header_enrichment
 +// TODO: transport_level_marking
 +// forwarding_policy >> oln: Implementation
-+  if (ISSET_BIT (far->forwarding_parameters.grp.fields,
++  if (UPF_ISSET_BIT (far->forwarding_parameters.grp.fields,
 +		       FORWARDING_PARAMETERS_FORWARDING_POLICY))
 +	  {
 +      policy_id = far->forwarding_parameters.forwarding_policy.identifier;
@@ -637,7 +637,7 @@
  	//TODO: transport_level_marking
 -	//TODO: forwarding_policy
 +	//forwarding_policy  >> oln: Implementation
-+  	if (ISSET_BIT (far->update_forwarding_parameters.grp.fields,
++  	if (UPF_ISSET_BIT (far->update_forwarding_parameters.grp.fields,
 +		       UPDATE_FORWARDING_PARAMETERS_FORWARDING_POLICY))
 +	  {
 +      policy_id = far->update_forwarding_parameters.forwarding_policy.identifier;

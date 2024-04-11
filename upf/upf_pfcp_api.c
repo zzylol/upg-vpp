@@ -856,7 +856,7 @@ handle_create_pdr (upf_session_t * sx, pfcp_create_pdr_t * create_pdr,
     create->id = pdr->pdr_id;
     create->precedence = pdr->precedence;
 
-    if (ISSET_BIT (pdr->pdi.grp.fields, PDI_NETWORK_INSTANCE))
+    if (UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_NETWORK_INSTANCE))
       {
 	nwi = lookup_nwi (pdr->pdi.network_instance);
 	if (!nwi)
@@ -879,7 +879,7 @@ handle_create_pdr (upf_session_t * sx, pfcp_create_pdr_t * create_pdr,
 
     create->pdi.src_intf = pdr->pdi.source_interface;
 
-    if (ISSET_BIT (pdr->pdi.grp.fields, PDI_F_TEID))
+    if (UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_F_TEID))
       {
 	if (handle_f_teid
 	    (sx, gtm, &pdr->pdi, create, &response->created_pdr, res, 1) != 0)
@@ -899,15 +899,15 @@ handle_create_pdr (upf_session_t * sx, pfcp_create_pdr_t * create_pdr,
 	 */
       }
 
-    if (ISSET_BIT (pdr->pdi.grp.fields, PDI_UE_IP_ADDRESS))
+    if (UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_UE_IP_ADDRESS))
       {
 	create->pdi.fields |= F_PDI_UE_IP_ADDR;
 	create->pdi.ue_addr = pdr->pdi.ue_ip_address;
 	if (create->pdi.ue_addr.flags & IE_UE_IP_ADDRESS_V4)
 	  sx->user_addr.as_u32 = create->pdi.ue_addr.ip4.as_u32;
 
-	if (!ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER) &&
-	    !ISSET_BIT (pdr->pdi.grp.fields, PDI_APPLICATION_ID))
+	if (!UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER) &&
+	    !UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_APPLICATION_ID))
 	  {
 	    /* neither SDF, nor Application Id, generate a wildcard
 	       ACL to make ACL scanning simpler */
@@ -916,7 +916,7 @@ handle_create_pdr (upf_session_t * sx, pfcp_create_pdr_t * create_pdr,
 	  }
       }
 
-    if (ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER))
+    if (UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER))
       {
 	pfcp_sdf_filter_t *sdf;
 
@@ -945,7 +945,7 @@ handle_create_pdr (upf_session_t * sx, pfcp_create_pdr_t * create_pdr,
 	}
       }
 
-    if (ISSET_BIT (pdr->pdi.grp.fields, PDI_APPLICATION_ID))
+    if (UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_APPLICATION_ID))
       {
 	upf_adf_app_t *app;
 	uword *p = NULL;
@@ -965,7 +965,7 @@ handle_create_pdr (upf_session_t * sx, pfcp_create_pdr_t * create_pdr,
 	create->pdi.adr.db_id = upf_adf_get_adr_db (p[0]);
 	create->pdi.adr.flags = app->flags;
 
-	if (!ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER) &&
+	if (!UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER) &&
 	    (create->pdi.adr.flags & UPF_ADR_IP_RULES))
 	  {
 	    create->pdi.fields |= F_PDI_SDF_FILTER;
@@ -977,7 +977,7 @@ handle_create_pdr (upf_session_t * sx, pfcp_create_pdr_t * create_pdr,
     create->outer_header_removal = OPT (pdr, CREATE_PDR_OUTER_HEADER_REMOVAL,
 					outer_header_removal, ~0);
     create->far_id = OPT (pdr, CREATE_PDR_FAR_ID, far_id, ~0);
-    if (ISSET_BIT (pdr->grp.fields, CREATE_PDR_URR_ID))
+    if (UPF_ISSET_BIT (pdr->grp.fields, CREATE_PDR_URR_ID))
       {
 	pfcp_urr_id_t *urr_id;
 
@@ -988,7 +988,7 @@ handle_create_pdr (upf_session_t * sx, pfcp_create_pdr_t * create_pdr,
 	}
       }
 
-    if (ISSET_BIT (pdr->grp.fields, CREATE_PDR_QER_ID))
+    if (UPF_ISSET_BIT (pdr->grp.fields, CREATE_PDR_QER_ID))
       {
 	pfcp_qer_id_t *qer_id;
 
@@ -1048,7 +1048,7 @@ handle_update_pdr (upf_session_t * sx, pfcp_update_pdr_t * update_pdr,
 	goto out_error;
       }
 
-    if (ISSET_BIT (pdr->pdi.grp.fields, PDI_NETWORK_INSTANCE))
+    if (UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_NETWORK_INSTANCE))
       {
 	if (vec_len (pdr->pdi.network_instance) != 0)
 	  {
@@ -1076,7 +1076,7 @@ handle_update_pdr (upf_session_t * sx, pfcp_update_pdr_t * update_pdr,
 	}
     }
 
-    if (ISSET_BIT (pdr->pdi.grp.fields, PDI_F_TEID))
+    if (UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_F_TEID))
       {
 	if (handle_f_teid (sx, gtm, &pdr->pdi, update, NULL, res, 0) != 0)
 	  {
@@ -1085,13 +1085,13 @@ handle_update_pdr (upf_session_t * sx, pfcp_update_pdr_t * update_pdr,
 	  }
       }
 
-    if (ISSET_BIT (pdr->pdi.grp.fields, PDI_UE_IP_ADDRESS))
+    if (UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_UE_IP_ADDRESS))
       {
 	update->pdi.fields |= F_PDI_UE_IP_ADDR;
 	update->pdi.ue_addr = pdr->pdi.ue_ip_address;
 
-	if (!ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER) &&
-	    !ISSET_BIT (pdr->pdi.grp.fields, PDI_APPLICATION_ID))
+	if (!UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER) &&
+	    !UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_APPLICATION_ID))
 	  {
 	    /* neither SDF, nor Application Id, generate a wildcard
 	       ACL to make ACL scanning simpler */
@@ -1101,7 +1101,7 @@ handle_update_pdr (upf_session_t * sx, pfcp_update_pdr_t * update_pdr,
 	  }
       }
 
-    if (ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER))
+    if (UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER))
       {
 	pfcp_sdf_filter_t *sdf;
 
@@ -1131,7 +1131,7 @@ handle_update_pdr (upf_session_t * sx, pfcp_update_pdr_t * update_pdr,
 	}
       }
 
-    if (ISSET_BIT (pdr->pdi.grp.fields, PDI_APPLICATION_ID))
+    if (UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_APPLICATION_ID))
       {
 	upf_adf_app_t *app;
 	uword *p = NULL;
@@ -1151,7 +1151,7 @@ handle_update_pdr (upf_session_t * sx, pfcp_update_pdr_t * update_pdr,
 	update->pdi.adr.db_id = upf_adf_get_adr_db (p[0]);
 	update->pdi.adr.flags = app->flags;
 
-	if (!ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER))
+	if (!UPF_ISSET_BIT (pdr->pdi.grp.fields, PDI_SDF_FILTER))
 	  {
 	    vec_reset_length (update->pdi.acl);
 	    if (update->pdi.adr.flags & UPF_ADR_IP_RULES)
@@ -1167,7 +1167,7 @@ handle_update_pdr (upf_session_t * sx, pfcp_update_pdr_t * update_pdr,
     update->outer_header_removal = OPT (pdr, UPDATE_PDR_OUTER_HEADER_REMOVAL,
 					outer_header_removal, ~0);
     update->far_id = OPT (pdr, UPDATE_PDR_FAR_ID, far_id, ~0);
-    if (ISSET_BIT (pdr->grp.fields, UPDATE_PDR_URR_ID))
+    if (UPF_ISSET_BIT (pdr->grp.fields, UPDATE_PDR_URR_ID))
       {
 	pfcp_urr_id_t *urr_id;
 
@@ -1179,7 +1179,7 @@ handle_update_pdr (upf_session_t * sx, pfcp_update_pdr_t * update_pdr,
 	}
       }
 
-    if (ISSET_BIT (pdr->grp.fields, UPDATE_PDR_QER_ID))
+    if (UPF_ISSET_BIT (pdr->grp.fields, UPDATE_PDR_QER_ID))
       {
 	pfcp_qer_id_t *qer_id;
 
@@ -1360,7 +1360,7 @@ ip_udp_gtpu_rewrite (upf_far_forward_t * ff, u32 fib_index, int is_ip4)
   ff->rewrite = r.rw;
 
   /* For now only support 8-byte gtpu header. TBD */
-  _vec_len (ff->rewrite) = len - 4;
+  _vec_find (ff->rewrite)->len = len - ;4
 
   return;
 }
@@ -1467,7 +1467,7 @@ handle_create_far (upf_session_t * sx, pfcp_create_far_t * create_far,
 	ISSET_BIT (far->grp.fields, CREATE_FAR_FORWARDING_PARAMETERS))
       {
 
-	if (ISSET_BIT (far->forwarding_parameters.grp.fields,
+	if (UPF_ISSET_BIT (far->forwarding_parameters.grp.fields,
 		       FORWARDING_PARAMETERS_NETWORK_INSTANCE))
 	  {
 	    upf_nwi_t *nwi =
@@ -1484,7 +1484,7 @@ handle_create_far (upf_session_t * sx, pfcp_create_far_t * create_far,
 	create->forward.dst_intf =
 	  far->forwarding_parameters.destination_interface;
 
-	if (ISSET_BIT (far->forwarding_parameters.grp.fields,
+	if (UPF_ISSET_BIT (far->forwarding_parameters.grp.fields,
 		       FORWARDING_PARAMETERS_REDIRECT_INFORMATION))
 	  {
 	    create->forward.flags |= FAR_F_REDIRECT_INFORMATION;
@@ -1494,12 +1494,12 @@ handle_create_far (upf_session_t * sx, pfcp_create_far_t * create_far,
 
 	  }
 
-	if ((ISSET_BIT (far->forwarding_parameters.grp.fields,
+	if ((UPF_ISSET_BIT (far->forwarding_parameters.grp.fields,
 			FORWARDING_PARAMETERS_BBF_APPLY_ACTION))
 	    && (far->
 		forwarding_parameters.bbf_apply_action & BBF_APPLY_ACTION_NAT)
 	    &&
-	    (ISSET_BIT
+	    (UPF_ISSET_BIT
 	     (far->forwarding_parameters.grp.fields,
 	      FORWARDING_PARAMETERS_BBF_NAT_PORT_BLOCK)))
 	  {
@@ -1512,7 +1512,7 @@ handle_create_far (upf_session_t * sx, pfcp_create_far_t * create_far,
 	      goto out_error;
 	  }
 
-	if (ISSET_BIT (far->forwarding_parameters.grp.fields,
+	if (UPF_ISSET_BIT (far->forwarding_parameters.grp.fields,
 		       FORWARDING_PARAMETERS_OUTER_HEADER_CREATION))
 	  {
 	    pfcp_outer_header_creation_t *ohc =
@@ -1550,7 +1550,7 @@ handle_create_far (upf_session_t * sx, pfcp_create_far_t * create_far,
 	  }
 // TODO: transport_level_marking
 // forwarding_policy >> oln: Implementation
-  if (ISSET_BIT (far->forwarding_parameters.grp.fields,
+  if (UPF_ISSET_BIT (far->forwarding_parameters.grp.fields,
 		       FORWARDING_PARAMETERS_FORWARDING_POLICY))
 	  {
       policy_id = far->forwarding_parameters.forwarding_policy.identifier;
@@ -1627,7 +1627,7 @@ handle_update_far (upf_session_t * sx, pfcp_update_far_t * update_far,
     if ((update->apply_action & FAR_FORWARD) &&
 	ISSET_BIT (far->grp.fields, UPDATE_FAR_UPDATE_FORWARDING_PARAMETERS))
       {
-	if (ISSET_BIT (far->update_forwarding_parameters.grp.fields,
+	if (UPF_ISSET_BIT (far->update_forwarding_parameters.grp.fields,
 		       UPDATE_FORWARDING_PARAMETERS_NETWORK_INSTANCE))
 	  {
 	    if (vec_len (far->update_forwarding_parameters.network_instance)
@@ -1652,7 +1652,7 @@ handle_update_far (upf_session_t * sx, pfcp_update_far_t * update_far,
 	update->forward.dst_intf =
 	  far->update_forwarding_parameters.destination_interface;
 
-	if (ISSET_BIT (far->update_forwarding_parameters.grp.fields,
+	if (UPF_ISSET_BIT (far->update_forwarding_parameters.grp.fields,
 		       UPDATE_FORWARDING_PARAMETERS_REDIRECT_INFORMATION))
 	  {
 	    update->forward.flags |= FAR_F_REDIRECT_INFORMATION;
@@ -1662,7 +1662,7 @@ handle_update_far (upf_session_t * sx, pfcp_update_far_t * update_far,
 	       &far->update_forwarding_parameters.redirect_information);
 	  }
 
-	if (ISSET_BIT (far->update_forwarding_parameters.grp.fields,
+	if (UPF_ISSET_BIT (far->update_forwarding_parameters.grp.fields,
 		       UPDATE_FORWARDING_PARAMETERS_OUTER_HEADER_CREATION))
 	  {
 	    pfcp_outer_header_creation_t *ohc =
@@ -1670,7 +1670,7 @@ handle_update_far (upf_session_t * sx, pfcp_update_far_t * update_far,
 	    u32 fib_index;
 	    int is_ip4 = !!(ohc->description & OUTER_HEADER_CREATION_ANY_IP4);
 
-	    if (ISSET_BIT (far->update_forwarding_parameters.grp.fields,
+	    if (UPF_ISSET_BIT (far->update_forwarding_parameters.grp.fields,
 			   UPDATE_FORWARDING_PARAMETERS_PFCPSMREQ_FLAGS) &&
 		far->update_forwarding_parameters.pfcpsmreq_flags &
 		PFCPSMREQ_SNDEM)
@@ -1706,7 +1706,7 @@ handle_update_far (upf_session_t * sx, pfcp_update_far_t * update_far,
 	  }
 	//TODO: transport_level_marking
 	//forwarding_policy  >> oln: Implementation
-  	if (ISSET_BIT (far->update_forwarding_parameters.grp.fields,
+  	if (UPF_ISSET_BIT (far->update_forwarding_parameters.grp.fields,
 		       UPDATE_FORWARDING_PARAMETERS_FORWARDING_POLICY))
 	  {
       policy_id = far->update_forwarding_parameters.forwarding_policy.identifier;
@@ -1831,34 +1831,34 @@ handle_create_urr (upf_session_t * sx, pfcp_create_urr_t * create_urr,
       OPT (urr, CREATE_URR_REPORTING_TRIGGERS, reporting_triggers, 0);
     create->start_time = now;
 
-    if (ISSET_BIT (urr->grp.fields, CREATE_URR_MEASUREMENT_PERIOD))
+    if (UPF_ISSET_BIT (urr->grp.fields, CREATE_URR_MEASUREMENT_PERIOD))
       {
 	create->update_flags |= PFCP_URR_UPDATE_MEASUREMENT_PERIOD;
 	create->measurement_period.period = urr->measurement_period;
 	create->measurement_period.base = now;
       }
 
-    if (ISSET_BIT (urr->grp.fields, CREATE_URR_VOLUME_THRESHOLD))
+    if (UPF_ISSET_BIT (urr->grp.fields, CREATE_URR_VOLUME_THRESHOLD))
       {
 	create->volume.threshold.ul = urr->volume_threshold.ul;
 	create->volume.threshold.dl = urr->volume_threshold.dl;
 	create->volume.threshold.total = urr->volume_threshold.total;
       }
 
-    if (ISSET_BIT (urr->grp.fields, CREATE_URR_VOLUME_QUOTA))
+    if (UPF_ISSET_BIT (urr->grp.fields, CREATE_URR_VOLUME_QUOTA))
       {
 	create->volume.quota.ul = urr->volume_quota.ul;
 	create->volume.quota.dl = urr->volume_quota.dl;
 	create->volume.quota.total = urr->volume_quota.total;
       }
 
-    if (ISSET_BIT (urr->grp.fields, CREATE_URR_TIME_THRESHOLD))
+    if (UPF_ISSET_BIT (urr->grp.fields, CREATE_URR_TIME_THRESHOLD))
       {
 	create->update_flags |= PFCP_URR_UPDATE_TIME_THRESHOLD;
 	create->time_threshold.period = urr->time_threshold;
 	create->time_threshold.base = now;
       }
-    if (ISSET_BIT (urr->grp.fields, CREATE_URR_TIME_QUOTA))
+    if (UPF_ISSET_BIT (urr->grp.fields, CREATE_URR_TIME_QUOTA))
       {
 	create->update_flags |= PFCP_URR_UPDATE_TIME_QUOTA;
 	create->time_quota.period = urr->time_quota;
@@ -1868,13 +1868,13 @@ handle_create_urr (upf_session_t * sx, pfcp_create_urr_t * create_urr,
     //TODO: quota_holding_time;
     //TODO: dropped_dl_traffic_threshold;
 
-    if (ISSET_BIT (urr->grp.fields, CREATE_URR_QUOTA_VALIDITY_TIME))
+    if (UPF_ISSET_BIT (urr->grp.fields, CREATE_URR_QUOTA_VALIDITY_TIME))
       {
 	create->update_flags |= PFCP_URR_UPDATE_QUOTA_VALIDITY_TIME;
 	create->quota_validity_time.period = urr->quota_validity_time;
 	create->quota_validity_time.base = now;
       }
-    if (ISSET_BIT (urr->grp.fields, CREATE_URR_MONITORING_TIME))
+    if (UPF_ISSET_BIT (urr->grp.fields, CREATE_URR_MONITORING_TIME))
       {
 	f64 secs;
 
@@ -1890,7 +1890,7 @@ handle_create_urr (upf_session_t * sx, pfcp_create_urr_t * create_urr,
     //TODO: subsequent_time_threshold;
     //TODO: inactivity_detection_time;
 
-    if (ISSET_BIT (urr->grp.fields, CREATE_URR_LINKED_URR_ID) &&
+    if (UPF_ISSET_BIT (urr->grp.fields, CREATE_URR_LINKED_URR_ID) &&
 	create->triggers & REPORTING_TRIGGER_LINKED_USAGE_REPORTING)
       create->linked_urr_ids = vec_dup (urr->linked_urr_id);
 
@@ -1933,7 +1933,7 @@ handle_update_urr (upf_session_t * sx, pfcp_update_urr_t * update_urr,
 			    reporting_triggers, update->triggers);
     update->status &= ~(URR_OVER_QUOTA | URR_REPORTED);
 
-    if (ISSET_BIT (urr->grp.fields, UPDATE_URR_MEASUREMENT_PERIOD))
+    if (UPF_ISSET_BIT (urr->grp.fields, UPDATE_URR_MEASUREMENT_PERIOD))
       {
 	update->update_flags |= PFCP_URR_UPDATE_MEASUREMENT_PERIOD;
 	update->measurement_period.period = urr->measurement_period;
@@ -1950,13 +1950,13 @@ handle_update_urr (upf_session_t * sx, pfcp_update_urr_t * update_urr,
 	update->measurement_period.base = now;
       }
 
-    if (ISSET_BIT (urr->grp.fields, UPDATE_URR_VOLUME_THRESHOLD))
+    if (UPF_ISSET_BIT (urr->grp.fields, UPDATE_URR_VOLUME_THRESHOLD))
       {
 	update->volume.threshold.ul = urr->volume_threshold.ul;
 	update->volume.threshold.dl = urr->volume_threshold.dl;
 	update->volume.threshold.total = urr->volume_threshold.total;
       }
-    if (ISSET_BIT (urr->grp.fields, UPDATE_URR_VOLUME_QUOTA))
+    if (UPF_ISSET_BIT (urr->grp.fields, UPDATE_URR_VOLUME_QUOTA))
       {
 	update->update_flags |= PFCP_URR_UPDATE_VOLUME_QUOTA;
 	memset (&update->volume.measure.consumed, 0,
@@ -1966,12 +1966,12 @@ handle_update_urr (upf_session_t * sx, pfcp_update_urr_t * update_urr,
 	update->volume.quota.total = urr->volume_quota.total;
       }
 
-    if (ISSET_BIT (urr->grp.fields, UPDATE_URR_TIME_THRESHOLD))
+    if (UPF_ISSET_BIT (urr->grp.fields, UPDATE_URR_TIME_THRESHOLD))
       {
 	update->update_flags |= PFCP_URR_UPDATE_TIME_THRESHOLD;
 	update->time_threshold.period = urr->time_threshold;
       }
-    if (ISSET_BIT (urr->grp.fields, UPDATE_URR_TIME_QUOTA))
+    if (UPF_ISSET_BIT (urr->grp.fields, UPDATE_URR_TIME_QUOTA))
       {
 	update->update_flags |= PFCP_URR_UPDATE_TIME_QUOTA;
 	update->time_quota.period = urr->time_quota;
@@ -1981,14 +1981,14 @@ handle_update_urr (upf_session_t * sx, pfcp_update_urr_t * update_urr,
     //TODO: quota_holding_time;
     //TODO: dropped_dl_traffic_threshold;
 
-    if (ISSET_BIT (urr->grp.fields, UPDATE_URR_QUOTA_VALIDITY_TIME))
+    if (UPF_ISSET_BIT (urr->grp.fields, UPDATE_URR_QUOTA_VALIDITY_TIME))
       {
 	update->update_flags |= PFCP_URR_UPDATE_QUOTA_VALIDITY_TIME;
 	update->quota_validity_time.period = urr->quota_validity_time;
 	update->quota_validity_time.base = now;
       }
 
-    if (ISSET_BIT (urr->grp.fields, UPDATE_URR_MONITORING_TIME))
+    if (UPF_ISSET_BIT (urr->grp.fields, UPDATE_URR_MONITORING_TIME))
       {
 	f64 secs;
 
@@ -2004,7 +2004,7 @@ handle_update_urr (upf_session_t * sx, pfcp_update_urr_t * update_urr,
     //TODO: subsequent_time_threshold;
     //TODO: inactivity_detection_time;
 
-    if (ISSET_BIT (urr->grp.fields, UPDATE_URR_LINKED_URR_ID) &&
+    if (UPF_ISSET_BIT (urr->grp.fields, UPDATE_URR_LINKED_URR_ID) &&
 	update->triggers & REPORTING_TRIGGER_LINKED_USAGE_REPORTING)
       update->linked_urr_ids = vec_dup (urr->linked_urr_id);
     else
@@ -2100,7 +2100,7 @@ handle_create_qer (upf_session_t * sx, pfcp_create_qer_t * create_qer,
     create->gate_status[UPF_UL] = qer->gate_status.ul;
     create->gate_status[UPF_DL] = qer->gate_status.dl;
 
-    if (ISSET_BIT (qer->grp.fields, CREATE_QER_MBR))
+    if (UPF_ISSET_BIT (qer->grp.fields, CREATE_QER_MBR))
       {
 	create->flags |= PFCP_QER_MBR;
 	create->mbr = qer->mbr;
@@ -2143,17 +2143,17 @@ handle_update_qer (upf_session_t * sx, pfcp_update_qer_t * update_qer,
       }
 
     update->policer.key =
-      (ISSET_BIT (qer->grp.fields, UPDATE_QER_QER_CORRELATION_ID)) ?
+      (UPF_ISSET_BIT (qer->grp.fields, UPDATE_QER_QER_CORRELATION_ID)) ?
       qer->qer_correlation_id : (u64) (sx - gtm->sessions) << 32 | update->id;
     update->policer.value = ~0;
 
-    if (ISSET_BIT (qer->grp.fields, UPDATE_QER_GATE_STATUS))
+    if (UPF_ISSET_BIT (qer->grp.fields, UPDATE_QER_GATE_STATUS))
       {
 	update->gate_status[UPF_UL] = qer->gate_status.ul;
 	update->gate_status[UPF_DL] = qer->gate_status.dl;
       }
 
-    if (ISSET_BIT (qer->grp.fields, UPDATE_QER_MBR))
+    if (UPF_ISSET_BIT (qer->grp.fields, UPDATE_QER_MBR))
       {
 	update->flags |= PFCP_QER_MBR;
 	update->mbr = qer->mbr;
@@ -2559,7 +2559,7 @@ handle_session_establishment_request (pfcp_msg_t * msg,
 
   sess = pfcp_create_session (assoc, &up_address, seid, &cp_address);
 
-  if (ISSET_BIT
+  if (UPF_ISSET_BIT
       (req->grp.fields,
        SESSION_ESTABLISHMENT_REQUEST_USER_PLANE_INACTIVITY_TIMER))
     {
@@ -2645,7 +2645,7 @@ handle_session_modification_request (pfcp_msg_t * msg,
   resp_dmsg.seid = sess->cp_seid;
 
   if (req->grp.fields &
-      (BIT (SESSION_MODIFICATION_REQUEST_USER_PLANE_INACTIVITY_TIMER) |
+      (UPF_BIT (SESSION_MODIFICATION_REQUEST_USER_PLANE_INACTIVITY_TIMER) |
        BIT (SESSION_MODIFICATION_REQUEST_REMOVE_PDR) |
        BIT (SESSION_MODIFICATION_REQUEST_REMOVE_FAR) |
        BIT (SESSION_MODIFICATION_REQUEST_REMOVE_URR) |
@@ -2723,7 +2723,7 @@ handle_session_modification_request (pfcp_msg_t * msg,
   active = pfcp_get_rules (sess, PFCP_ACTIVE);
   upf_usage_report_init (&report, vec_len (active->urr));
 
-  if (ISSET_BIT (req->grp.fields, SESSION_MODIFICATION_REQUEST_QUERY_URR) &&
+  if (UPF_ISSET_BIT (req->grp.fields, SESSION_MODIFICATION_REQUEST_QUERY_URR) &&
       vec_len (req->query_urr) != 0)
     {
       UPF_SET_BIT (resp->grp.fields, SESSION_PROCEDURE_RESPONSE_USAGE_REPORT);
@@ -2741,7 +2741,7 @@ handle_session_modification_request (pfcp_msg_t * msg,
       }
     }
   else
-    if (ISSET_BIT
+    if (UPF_ISSET_BIT
 	(req->grp.fields, SESSION_MODIFICATION_REQUEST_PFCPSMREQ_FLAGS)
 	&& req->pfcpsmreq_flags & PFCPSMREQ_QAURR)
     {

@@ -58,7 +58,7 @@ format_flags (u8 * s, va_list * args)
   s = format (s, "[");
   for (int i = 0; i < 64 && atoms[i] != NULL; i++)
     {
-      if (!ISSET_BIT (flags, i))
+      if (!UPF_ISSET_BIT (flags, i))
 	continue;
 
       if (!first)
@@ -946,7 +946,7 @@ format_sdf_filter (u8 * s, va_list * args)
     s = format (s, "FltId: %u,", v->sdf_filter_id);
 
   if (v->flags)
-    _vec_len (s)--;
+    _vec_find (s)->len--;
   else
     s = format (s, "undef");
 
@@ -1928,7 +1928,7 @@ format_pfd_contents (u8 * s0, va_list * args)
     s = format (s, "DNP:%v,", v->dnp);
 
   if (s != s0)
-    _vec_len (s)--;
+    _vec_find (s)->len--;
   else
     s = format (s, "undef");
 
@@ -2193,7 +2193,7 @@ format_fq_csid (u8 * s, va_list * args)
     s = format (s, "%u,", *csid);
   }
   if (vec_len (v->csid) != 0)
-    _vec_len (s)--;
+    _vec_find (s)->len--;
   s = format (s, "]");
 
   return s;
@@ -2959,7 +2959,7 @@ format_dl_flow_level_marking (u8 * s, va_list * args)
     }
 
   if (v->flags)
-    _vec_len (s)--;
+    _vec_find (s)->len--;
 
   return s;
 }
@@ -3569,8 +3569,7 @@ format_user_plane_ip_resource_information (u8 * s, va_list * args)
       format (s, "teid: 0x%02x000000/%u", v->teid_range,
 	      v->teid_range_indication);
   else
-    _vec_len (s) -= 2;
-
+    _vec_find(s)->len -= 2;
   return s;
 }
 
@@ -3786,7 +3785,7 @@ format_pfcp_mac_address (u8 * s, va_list * args)
     s = format (s, "UDST:%U,", format_mac_address_t, v->upper_dst_mac);
 
   if (v->flags)
-    _vec_len (s)--;
+    _vec_find (s)->len--;
 
   return s;
 }
@@ -4009,7 +4008,7 @@ format_user_id (u8 * s0, va_list * args)
     s = format (s, "NAI:%v,", v->nai);
 
   if (s != s0)
-    _vec_len (s)--;
+    _vec_find (s)->len--;
 
   return s;
 }
@@ -4189,7 +4188,7 @@ format_mac_addresses_vec (u8 * s, va_list * args)
     s = format (s, "%U,", format_mac_address_t, mac);
   }
   if (vec_len (*v) != 0)
-    _vec_len (s)--;
+    _vec_find (s)->len--;
   s = format (s, "]");
 
   return s;
@@ -7879,11 +7878,10 @@ decode_vector_ie (const struct pfcp_ie_def *def, u8 * ie, u16 length, void *p,
   vl = vec_len (*v);
   *v = _vec_resize (*v, 1, (vl + 1) * def->length, 0, 0);
   memset (*v + (vl * def->length), 0, def->length);
-  _vec_len (*v) = vl;
+  _vec_find (*v)->len = vl;
 
   if ((r = decode_ie (def, ie, length, *v + (vl * def->length), err)) == 0)
-    _vec_len (*v)++;
-
+    _vec_find (*v)->len++;
   return r;
 }
 
@@ -8008,18 +8006,18 @@ encode_ie (const struct pfcp_group_ie_def *item,
    * which adjusts the capacity of the vector
    */
   vec_validate (*vec, hdr + MIN_SIMPLE_IE_SPACE);
-  _vec_len (*vec) = hdr;
+  _vec_find (*vec)->len = hdr;
 
   if (item->vendor == 0)
     {
       set_ie_hdr_type (*vec, item->type, hdr);
-      _vec_len (*vec) += sizeof (pfcp_ie_t);
+      _vec_find (*vec)->len += sizeof (pfcp_ie_t);
     }
   else
     {
       set_ie_vendor_hdr_type (*vec, 0x8000 | item->type, item->vendor, hdr);
       set_ie_vendor_hdr_vendor (*vec, item->vendor, hdr);
-      _vec_len (*vec) += sizeof (pfcp_ie_vendor_t);
+      _vec_find (*vec)->len += sizeof (pfcp_ie_vendor_t);
     }
 
   if (def->size != 0)
@@ -8033,7 +8031,7 @@ encode_ie (const struct pfcp_group_ie_def *item,
   if (r == 0)
     finalize_ie (*vec, hdr, _vec_len (*vec));
   else
-    _vec_len (*vec) = hdr;
+    _vec_find (&vec)->len = hdr;
 
 #if CLIB_DEBUG > 0
   /*
@@ -8082,7 +8080,7 @@ encode_group (const struct pfcp_ie_def *def, struct pfcp_group *grp,
       if (item->type == 0 && item->vendor == 0)
 	continue;
 
-      if (!ISSET_BIT (grp->fields, i))
+      if (!UPF_ISSET_BIT (grp->fields, i))
 	continue;
 
       ie_def = get_ie_def (item);
@@ -8233,7 +8231,7 @@ free_group (const struct pfcp_ie_def *def, struct pfcp_group *grp)
       if (item->type == 0)
 	continue;
 
-      if (!ISSET_BIT (grp->fields, i))
+      if (!UPF_ISSET_BIT (grp->fields, i))
 	continue;
 
       if (item->is_array)
@@ -8310,7 +8308,7 @@ format_group (u8 * s, va_list * args)
       if (item->type == 0)
 	continue;
 
-      if (!ISSET_BIT (grp->fields, i))
+      if (!UPF_ISSET_BIT (grp->fields, i))
 	continue;
 
       ie_def = get_ie_def (item);

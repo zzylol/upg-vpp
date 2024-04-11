@@ -154,7 +154,7 @@ vnet_upf_create_nwi_if (u8 * name, u32 ip4_table_id, u32 ip6_table_id,
       vnet_interface_main_t *im = &vnm->interface_main;
       hw_if_index = gtm->free_nwi_hw_if_indices
 	[vec_len (gtm->free_nwi_hw_if_indices) - 1];
-      _vec_len (gtm->free_nwi_hw_if_indices) -= 1;
+      _vec_find (gtm->free_nwi_hw_if_indices)->len -= 1;
 
       hi = vnet_get_hw_interface (vnm, hw_if_index);
       hi->dev_instance = if_index;
@@ -2403,7 +2403,7 @@ process_urrs (vlib_main_t * vm, upf_session_t * sess,
 
   if (PREDICT_FALSE (status != URR_OK))
     {
-      vec_validate_ha (uev, 0, sizeof (upf_event_urr_hdr_t), 0, 0);
+      vec_validate_hap (uev, 0, sizeof (upf_event_urr_hdr_t), 0, 0);
       ueh =
 	(upf_event_urr_hdr_t *) vec_header (uev,
 					    sizeof (upf_event_urr_hdr_t));
