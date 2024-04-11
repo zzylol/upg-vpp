@@ -50,6 +50,8 @@ if(HS_FOUND)
     upf_app_db.c
     upf_ipfilter.c
     upf_app_dpo.c
+    upf_ipfix.c
+    upf_ipfix_templates.c
     flowtable_init.c
     flowtable.c
     unittest.c
