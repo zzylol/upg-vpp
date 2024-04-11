@@ -871,8 +871,6 @@ upf_encap_inline (vlib_main_t * vm,
 	  ip6_header_t *ip6_0;
 	  udp_header_t *udp0;
 	  gtpu_header_t *gtpu0;
-	  gtpu_ext_header_t *gtpu0_ext;
-	  bool ext_hdr_present;
 	  u64 *copy_src0, *copy_dst0;
 	  u32 *copy_src_last0, *copy_dst_last0;
 	  u16 new_l0;
@@ -905,17 +903,6 @@ upf_encap_inline (vlib_main_t * vm,
 	  next0 = peer0->next_dpo.dpoi_next_node;
 	  vnet_buffer (b0)->ip.adj_index[VLIB_TX] =
 	    peer0->next_dpo.dpoi_index;
-
-		gtpu_ext_header_t *gtpu0_tmp;
-	  gtpu0_tmp = vlib_buffer_get_current (b0) - 4;
-         ext_hdr_present = false;
-         if (gtpu0_tmp->type ==  0x01 & gtpu0_tmp->pad == GTPU_QFI)
-             ext_hdr_present = true;
-                         
-         if (far0->forward.dst_intf == DST_INTF_ACCESS & !ext_hdr_present) {
-              upf_buffer_opaque (b0)->gtpu.ext_hdr_len = 0x08;
-              vlib_buffer_advance (b0, -upf_buffer_opaque (b0)->gtpu.ext_hdr_len);      
-         }
 
 	  if (PREDICT_FALSE ((upf_buffer_opaque (b0)->gtpu.hdr_flags & GTPU_E_S_PN_BIT) != 0))
 	    vlib_buffer_advance (b0, -upf_buffer_opaque (b0)->gtpu.ext_hdr_len);
@@ -963,20 +950,7 @@ upf_encap_inline (vlib_main_t * vm,
 				      sizeof (*ip4_0) - sizeof (*udp0) -
 				      GTPU_V1_HDR_LEN);
 	      gtpu0->length = new_l0;
-	      if (far0->forward.dst_intf == DST_INTF_ACCESS & !ext_hdr_present) {
-                       gtpu0->ver_flags = GTPU_EXT_HDR_PRESENT;
-                       gtpu0->pdu_number = 0x00;
-                       gtpu0->sequence = 0x00;
-                       gtpu0->next_ext_type = GTPU_EXT_HDR_PDU_SESSION_CONTAINER;
-                       
-                       gtpu0_ext = (gtpu_ext_header_t *) (gtpu0 + 1);
-                       gtpu0_ext->type = 0x01;
-                       gtpu0_ext->len = 0x00;
-                       gtpu0_ext->pad = GTPU_QFI;
-             }
-             else
-                       gtpu0->ver_flags |= (upf_buffer_opaque (b0)->gtpu.hdr_flags & GTPU_E_S_PN_BIT);
-
+	      gtpu0->ver_flags |= (upf_buffer_opaque (b0)->gtpu.hdr_flags & GTPU_E_S_PN_BIT);
 	    }
 
 	  else			/* ip6 path */
