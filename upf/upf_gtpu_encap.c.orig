@@ -424,7 +424,7 @@ upf_encap_inline (vlib_main_t * vm,
   upf_peer_t *peer0 = NULL, *peer1 = NULL, *peer2 = NULL, *peer3 = NULL;
 
   u32 const csum_mask =
-	  ~(VNET_BUFFER_F_OFFLOAD_TCP_CKSUM | VNET_BUFFER_F_OFFLOAD_UDP_CKSUM |
+	  ~(VNET_BUFFER_OFFLOAD_F_TCP_CKSUM | VNET_BUFFER_OFFLOAD_F_UDP_CKSUM |
 	    (is_ip4 ? VNET_BUFFER_OFFLOAD_F_IP_CKSUM : 0));
 
   from = vlib_frame_vector_args (from_frame);
