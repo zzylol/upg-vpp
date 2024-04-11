@@ -679,7 +679,7 @@
 +  uword *hash_ptr;
 +
    memset (resp, 0, sizeof (*resp));
-   SET_BIT (resp->grp.fields, SESSION_PROCEDURE_RESPONSE_CAUSE);
+   UPF_SET_BIT (resp->grp.fields, SESSION_PROCEDURE_RESPONSE_CAUSE);
    resp->cause = PFCP_CAUSE_REQUEST_REJECTED;
 @@ -2606,6 +2676,16 @@
  out_send_resp:

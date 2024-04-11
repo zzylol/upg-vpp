@@ -536,7 +536,7 @@ upf_pfcp_session_up_deletion_report (upf_session_t * sx)
   f64 now = psm->now;
 
   memset (req, 0, sizeof (*req));
-  SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_REPORT_TYPE);
+  UPF_SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_REPORT_TYPE);
 
   active = pfcp_get_rules (sx, PFCP_ACTIVE);
   if (vec_len (active->urr) != 0)
@@ -545,7 +545,7 @@ upf_pfcp_session_up_deletion_report (upf_session_t * sx)
 
       req->report_type = REPORT_TYPE_USAR;
 
-      SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_USAGE_REPORT);
+      UPF_SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_USAGE_REPORT);
 
       upf_usage_report_init (&report, vec_len (active->urr));
       upf_usage_report_set (&report,
@@ -558,7 +558,7 @@ upf_pfcp_session_up_deletion_report (upf_session_t * sx)
   else
     req->report_type = REPORT_TYPE_UISR;
 
-  SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_PFCPSRREQ_FLAGS);
+  UPF_SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_PFCPSRREQ_FLAGS);
   /* PSDBU = PFCP Session Deleted By the UP function */
   req->pfcpsrreq_flags = PFCPSRREQ_PSDBU;
 
@@ -591,10 +591,10 @@ upf_pfcp_session_usage_report (upf_session_t * sx, ip46_address_t * ue,
     return;
 
   memset (req, 0, sizeof (*req));
-  SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_REPORT_TYPE);
+  UPF_SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_REPORT_TYPE);
   req->report_type = REPORT_TYPE_USAR;
 
-  SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_USAGE_REPORT);
+  UPF_SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_USAGE_REPORT);
 
   upf_usage_report_init (&report, vec_len (active->urr));
 
@@ -781,7 +781,7 @@ upf_pfcp_session_urr_timer (upf_session_t * sx, f64 now)
 	     active->inactivity_timer.handle);
 
   memset (req, 0, sizeof (*req));
-  SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_REPORT_TYPE);
+  UPF_SET_BIT (req->grp.fields, SESSION_REPORT_REQUEST_REPORT_TYPE);
 
   if (active->inactivity_timer.handle != ~0 &&
       active->inactivity_timer.period != 0)
@@ -1122,7 +1122,7 @@ void upf_server_send_heartbeat (u32 node_idx)
   n = pool_elt_at_index (gtm->nodes, node_idx);
 
   memset (req, 0, sizeof (*req));
-  SET_BIT (req->grp.fields, HEARTBEAT_REQUEST_RECOVERY_TIME_STAMP);
+  UPF_SET_BIT (req->grp.fields, HEARTBEAT_REQUEST_RECOVERY_TIME_STAMP);
   req->recovery_time_stamp = psm->start_time;
 
   upf_pfcp_server_send_node_request (n, &dmsg);

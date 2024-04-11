@@ -513,7 +513,7 @@ upf_init (vlib_main_t * vm)
   udp_register_dst_port (vm, UDP_DST_PORT_GTPU6,
 			 upf_gtpu6_input_node.index, /* is_ip4 */ 0);
 
-  sm->fib_node_type = fib_node_register_new_type (&upf_vft);
+  sm->fib_node_type = fib_node_register_new_type ("upf", &upf_vft);
 
   sm->upf_app_by_name = hash_create_vec ( /* initial length */ 32,
 					 sizeof (u8), sizeof (uword));

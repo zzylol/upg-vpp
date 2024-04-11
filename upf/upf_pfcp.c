@@ -192,8 +192,10 @@ vnet_upf_create_nwi_if (u8 * name, u32 ip4_table_id, u32 ip6_table_id,
   l2im->configs[sw_if_index].bd_index = 0;
 
   /* move into fib table */
-  ip_table_bind (FIB_PROTOCOL_IP4, sw_if_index, ip4_table_id, 0);
-  ip_table_bind (FIB_PROTOCOL_IP6, sw_if_index, ip6_table_id, 0);
+  if (ip_table_bind (FIB_PROTOCOL_IP4, sw_if_index, ip4_table_id) != 0)
+    clib_warning ("failed to bind IPv4 table for NWI");
+  if (ip_table_bind (FIB_PROTOCOL_IP6, sw_if_index, ip6_table_id) != 0)
+    clib_warning ("failed to bind IPv6 table for NWI");
 
   nwi->fib_index[FIB_PROTOCOL_IP4] =
     ip4_fib_table_get_index_for_sw_if_index (sw_if_index);
@@ -676,7 +678,8 @@ peer_addr_ref (const upf_far_forward_t * fwd)
 
   fib_node_init (&p->node, gtm->fib_node_type);
   fib_prefix_t tun_dst_pfx;
-  fib_prefix_from_ip46_addr (&fwd->outer_header_creation.ip, &tun_dst_pfx);
+  fib_protocol_t fp = fib_ip_proto (!is_ip4);
+  fib_prefix_from_ip46_addr (fp, &fwd->outer_header_creation.ip, &tun_dst_pfx);
 
   p->fib_entry_index = fib_entry_track (p->encap_fib_index,
 					&tun_dst_pfx,
@@ -850,14 +853,14 @@ pfcp_make_pending_urr (upf_session_t * sx)
 static upf_qer_policer_t *
 init_qer_policer (upf_qer_t * qer)
 {
-  sse2_qos_pol_cfg_params_st cfg = {
-    .rate_type = SSE2_QOS_RATE_KBPS,
-    .rnd_type = SSE2_QOS_ROUND_TO_CLOSEST,
-    .rfc = SSE2_QOS_POLICER_TYPE_1R2C,
+  qos_pol_cfg_params_st cfg = {
+    .rate_type = QOS_RATE_KBPS,
+    .rnd_type = QOS_ROUND_TO_CLOSEST,
+    .rfc = QOS_POLICER_TYPE_1R2C,
     .color_aware = 0,
-    .conform_action = {.action_type = SSE2_QOS_ACTION_TRANSMIT,},
-    .exceed_action = {.action_type = SSE2_QOS_ACTION_DROP,},
-    .violate_action = {.action_type = SSE2_QOS_ACTION_DROP,},
+    .conform_action = {.action_type = QOS_ACTION_TRANSMIT,},
+    .exceed_action = {.action_type = QOS_ACTION_DROP,},
+    .violate_action = {.action_type = QOS_ACTION_DROP,},
   };
   upf_main_t *gtm = &upf_main;
   upf_qer_policer_t *pol;
@@ -866,10 +869,10 @@ init_qer_policer (upf_qer_t * qer)
   qer->policer.value = pol - gtm->qer_policers;
 
   cfg.rb.kbps.cir_kbps = qer->mbr.ul;
-  sse2_pol_logical_2_physical (&cfg, &pol->policer[UPF_UL]);
+  pol_logical_2_physical (&cfg, &pol->policer[UPF_UL]);
 
   cfg.rb.kbps.cir_kbps = qer->mbr.dl;
-  sse2_pol_logical_2_physical (&cfg, &pol->policer[UPF_DL]);
+  pol_logical_2_physical (&cfg, &pol->policer[UPF_DL]);
 
   clib_bihash_add_del_8_8 (&gtm->qer_by_id, &qer->policer, 1 /* is_add */ );
 
@@ -892,7 +895,7 @@ attach_qer_policer (upf_qer_t * qer)
 
   clib_atomic_fetch_add (&pol->ref_cnt, 1);
 
-  //sse2_pol_logical_2_physical(&qer->cfg, pol);
+  //pol_logical_2_physical(&qer->cfg, pol);
 }
 
 static void
@@ -2400,7 +2403,7 @@ process_urrs (vlib_main_t * vm, upf_session_t * sess,
 
   if (PREDICT_FALSE (status != URR_OK))
     {
-      vec_validate_ha (uev, 0, sizeof (upf_event_urr_hdr_t), 0);
+      vec_validate_ha (uev, 0, sizeof (upf_event_urr_hdr_t), 0, 0);
       ueh =
 	(upf_event_urr_hdr_t *) vec_header (uev,
 					    sizeof (upf_event_urr_hdr_t));

@@ -235,7 +235,7 @@ format_pfcp_msg_hdr (u8 * s, va_list * args)
 #define put_u8(V,I)				\
   do {						\
     *((u8 *)&(V)[_vec_len((V))]) = (I);		\
-    _vec_len((V)) += sizeof(u8);		\
+    _vec_find ((V))->len += sizeof(u8);		\
   } while (0)
 
 #define get_u8(V)				\
@@ -246,7 +246,7 @@ format_pfcp_msg_hdr (u8 * s, va_list * args)
 #define put_u16(V,I)				\
   do {						\
     *((u16 *)&(V)[_vec_len((V))]) = htons((I));	\
-    _vec_len((V)) += sizeof(u16);		\
+    _vec_find ((V))->len += sizeof(u16);		\
   } while (0)
 
 #define get_u16(V)				\
@@ -257,7 +257,7 @@ format_pfcp_msg_hdr (u8 * s, va_list * args)
 #define put_u16_little(V,I)						\
   do {									\
     *((u16 *)&(V)[_vec_len((V))]) = clib_host_to_little_u16((I));	\
-    _vec_len((V)) += sizeof(u16);					\
+    _vec_find ((V))->len += sizeof(u16);					\
   } while (0)
 
 #define get_u16_little(V)				\
@@ -270,7 +270,7 @@ format_pfcp_msg_hdr (u8 * s, va_list * args)
     (V)[_vec_len((V))] = (I) >> 16;			\
     (V)[_vec_len((V)) + 1] = ((I) >> 8) & 0xff;		\
     (V)[_vec_len((V)) + 2] = (I) & 0xff;		\
-    _vec_len((V)) += 3;					\
+    _vec_find ((V))->len += 3;					\
   } while (0)
 
 #define get_u24(V)						\
@@ -281,7 +281,7 @@ format_pfcp_msg_hdr (u8 * s, va_list * args)
 #define put_u32(V,I)				\
   do {						\
     *((u32 *)&(V)[_vec_len((V))]) = htonl((I));	\
-    _vec_len((V)) += sizeof(u32);		\
+    _vec_find ((V))->len += sizeof(u32);		\
   } while (0)
 
 #define get_u32(V)				\
@@ -296,7 +296,7 @@ format_pfcp_msg_hdr (u8 * s, va_list * args)
     (V)[_vec_len((V)) + 2] = ((I) >> 16) & 0xff;	\
     (V)[_vec_len((V)) + 3] = ((I) >> 8) & 0xff;		\
     (V)[_vec_len((V)) + 4] = (I) & 0xff;		\
-    _vec_len((V)) += 5;					\
+    _vec_find ((V))->len += 5;					\
   } while (0)
 
 #define get_u8_to_u64(V, Idx) ({u64 _V = (u8)((V)[(Idx)]); _V; })
@@ -313,7 +313,7 @@ format_pfcp_msg_hdr (u8 * s, va_list * args)
 #define put_u64(V,I)					\
   do {							\
     *((u64 *)&(V)[_vec_len((V))]) = htobe64((I));	\
-    _vec_len((V)) += sizeof(u64);			\
+    _vec_find ((V))->len += sizeof(u64);			\
   } while (0)
 
 #define get_u64(V)				\
@@ -332,7 +332,7 @@ typedef union
 #define put_f64(V,I)						\
   do {								\
     *((u64 *)&(V)[_vec_len((V))]) = htobe64(*(u64 *)&(I));	\
-    _vec_len((V)) += sizeof(u64);				\
+    _vec_find ((V))->len += sizeof(u64);				\
   } while (0)
 
 #define get_f64(V)					\
@@ -352,7 +352,7 @@ typedef union
   do {						\
     u8 *_t = vec_end((V));			\
     *(u32 *)_t = (IP).as_u32;			\
-    _vec_len((V)) += 4;				\
+    _vec_find ((V))->len += 4;				\
   } while (0)
 
 #define get_ip6(IP,V)				\
@@ -367,7 +367,7 @@ typedef union
     u8 *_t = vec_end((V));			\
     ((u64 *)_t)[0] = (IP).as_u64[0];		\
     ((u64 *)_t)[1] = (IP).as_u64[1];		\
-    _vec_len((V)) += 16;			\
+    _vec_find ((V))->len += 16;			\
 } while (0)
 
 #define put_ip46_ip4(V,IP)			\
@@ -7952,7 +7952,7 @@ decode_group (u8 * p, int len, const struct pfcp_ie_def *grp_def,
 	r = decode_vector_ie (ie_def, p + pos, length, v, err);
       else
 	{
-	  if (ISSET_BIT (grp->fields, id))
+	  if (UPF_ISSET_BIT (grp->fields, id))
 	    /* duplicate IE */
 	    vec_add1 (grp->ies, ie);
 	  else

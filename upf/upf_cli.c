@@ -1540,7 +1540,7 @@ const fib_node_vft_t upf_fp_vft = {
 static clib_error_t *
 upf_policy_init (vlib_main_t * vm)
 {
-  upf_policy_fib_node_type = fib_node_register_new_type (&upf_fp_vft);
+  upf_policy_fib_node_type = fib_node_register_new_type ("upf-fp", &upf_fp_vft);
   return (NULL);
 }
 VLIB_INIT_FUNCTION (upf_policy_init);
