@@ -3878,7 +3878,7 @@ decode_vlan_tag (u8 * data, u16 length, void *p)
   if (length < 3)
     return PFCP_CAUSE_INVALID_LENGTH;
 
-  v->mask = clib_host_to_net_u16 (((data[0] & BIT (0)) ? VLAN_MASK_PCP : 0) |
+  v->mask = clib_host_to_net_u16 (((data[0] & UPF_BIT (0)) ? VLAN_MASK_PCP : 0) |
 				  ((data[0] & BIT (1)) ? VLAN_MASK_DEI : 0) |
 				  ((data[0] & BIT (2)) ? VLAN_MASK_VID : 0));
   v->tci = clib_host_to_net_u16 (((data[1] & 0x07) << 5) |
@@ -3898,7 +3898,7 @@ encode_vlan_tag (void *p, u8 ** vec)
   u16 mask = clib_net_to_host_u16 (v->mask);
   u16 tci = clib_net_to_host_u16 (v->tci);
 
-  put_u8 (*vec, (((mask & VLAN_MASK_PCP) ? BIT (0) : 0) |
+  put_u8 (*vec, (((mask & VLAN_MASK_PCP) ? UPF_BIT (0) : 0) |
 		 ((mask & VLAN_MASK_DEI) ? BIT (1) : 0) |
 		 ((mask & VLAN_MASK_VID) ? BIT (2) : 0)));
   put_u16 (*vec, (((tci & VLAN_MASK_PCP) >> 5) |

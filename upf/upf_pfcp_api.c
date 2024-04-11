@@ -377,7 +377,7 @@ handle_association_setup_request (pfcp_msg_t * msg, pfcp_decoded_msg_t * dmsg)
       resp->up_function_features |= F_UPFF_FTUP;
       build_ue_ip_address_information (&resp->ue_ip_address_pool_information);
       if (vec_len (resp->ue_ip_address_pool_information) != 0)
-	SET_BIT (resp->grp.fields,
+	UPF_SET_BIT (resp->grp.fields,
 		 ASSOCIATION_PROCEDURE_RESPONSE_UE_IP_ADDRESS_POOL_INFORMATION);
       UPF_SET_BIT (resp->grp.fields,
 	       ASSOCIATION_PROCEDURE_RESPONSE_BBF_UP_FUNCTION_FEATURES);
@@ -388,7 +388,7 @@ handle_association_setup_request (pfcp_msg_t * msg, pfcp_decoded_msg_t * dmsg)
       build_user_plane_ip_resource_information
 	(&resp->user_plane_ip_resource_information);
       if (vec_len (resp->user_plane_ip_resource_information) != 0)
-	SET_BIT (resp->grp.fields,
+	UPF_SET_BIT (resp->grp.fields,
 		 ASSOCIATION_PROCEDURE_RESPONSE_USER_PLANE_IP_RESOURCE_INFORMATION);
     }
   if (r == 0)
@@ -1360,7 +1360,7 @@ ip_udp_gtpu_rewrite (upf_far_forward_t * ff, u32 fib_index, int is_ip4)
   ff->rewrite = r.rw;
 
   /* For now only support 8-byte gtpu header. TBD */
-  _vec_find (ff->rewrite)->len = len - ;4
+  _vec_find (ff->rewrite)->len = len - 4;
 
   return;
 }
@@ -1464,7 +1464,7 @@ handle_create_far (upf_session_t * sx, pfcp_create_far_t * create_far,
     create->apply_action = far->apply_action;
 
     if ((create->apply_action & FAR_FORWARD) &&
-	ISSET_BIT (far->grp.fields, CREATE_FAR_FORWARDING_PARAMETERS))
+	UPF_ISSET_BIT (far->grp.fields, CREATE_FAR_FORWARDING_PARAMETERS))
       {
 
 	if (UPF_ISSET_BIT (far->forwarding_parameters.grp.fields,
@@ -1625,7 +1625,7 @@ handle_update_far (upf_session_t * sx, pfcp_update_far_t * update_far,
       OPT (far, UPDATE_FAR_APPLY_ACTION, apply_action, update->apply_action);
 
     if ((update->apply_action & FAR_FORWARD) &&
-	ISSET_BIT (far->grp.fields, UPDATE_FAR_UPDATE_FORWARDING_PARAMETERS))
+	UPF_ISSET_BIT (far->grp.fields, UPDATE_FAR_UPDATE_FORWARDING_PARAMETERS))
       {
 	if (UPF_ISSET_BIT (far->update_forwarding_parameters.grp.fields,
 		       UPDATE_FORWARDING_PARAMETERS_NETWORK_INSTANCE))
@@ -2646,27 +2646,27 @@ handle_session_modification_request (pfcp_msg_t * msg,
 
   if (req->grp.fields &
       (UPF_BIT (SESSION_MODIFICATION_REQUEST_USER_PLANE_INACTIVITY_TIMER) |
-       BIT (SESSION_MODIFICATION_REQUEST_REMOVE_PDR) |
-       BIT (SESSION_MODIFICATION_REQUEST_REMOVE_FAR) |
-       BIT (SESSION_MODIFICATION_REQUEST_REMOVE_URR) |
-       BIT (SESSION_MODIFICATION_REQUEST_REMOVE_QER) |
-       BIT (SESSION_MODIFICATION_REQUEST_REMOVE_BAR) |
-       BIT (SESSION_MODIFICATION_REQUEST_CREATE_PDR) |
-       BIT (SESSION_MODIFICATION_REQUEST_CREATE_FAR) |
-       BIT (SESSION_MODIFICATION_REQUEST_CREATE_URR) |
-       BIT (SESSION_MODIFICATION_REQUEST_CREATE_QER) |
-       BIT (SESSION_MODIFICATION_REQUEST_CREATE_BAR) |
-       BIT (SESSION_MODIFICATION_REQUEST_UPDATE_PDR) |
-       BIT (SESSION_MODIFICATION_REQUEST_UPDATE_FAR) |
-       BIT (SESSION_MODIFICATION_REQUEST_UPDATE_URR) |
-       BIT (SESSION_MODIFICATION_REQUEST_UPDATE_QER) |
-       BIT (SESSION_MODIFICATION_REQUEST_UPDATE_BAR)))
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_REMOVE_PDR) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_REMOVE_FAR) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_REMOVE_URR) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_REMOVE_QER) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_REMOVE_BAR) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_CREATE_PDR) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_CREATE_FAR) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_CREATE_URR) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_CREATE_QER) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_CREATE_BAR) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_UPDATE_PDR) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_UPDATE_FAR) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_UPDATE_URR) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_UPDATE_QER) |
+       UPF_BIT (SESSION_MODIFICATION_REQUEST_UPDATE_BAR)))
     {
       /* invoke the update process only if a update is include */
       pfcp_update_session (sess);
 
       if (req->grp.fields &
-	  BIT (SESSION_MODIFICATION_REQUEST_USER_PLANE_INACTIVITY_TIMER))
+	  UPF_BIT (SESSION_MODIFICATION_REQUEST_USER_PLANE_INACTIVITY_TIMER))
 	{
 	  struct rules *pending = pfcp_get_rules (sess, PFCP_PENDING);
 
@@ -2678,7 +2678,7 @@ handle_session_modification_request (pfcp_msg_t * msg,
 	goto out_send_resp;
 
       if (vec_len (resp->created_pdr) > 0)
-	SET_BIT (resp->grp.fields, SESSION_PROCEDURE_RESPONSE_CREATED_PDR);
+	UPF_SET_BIT (resp->grp.fields, SESSION_PROCEDURE_RESPONSE_CREATED_PDR);
 
       if ((r = handle_update_pdr (sess, req->update_pdr, resp)) != 0)
 	goto out_send_resp;
